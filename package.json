@@ -1,7 +1,7 @@
 {
   "name": "projsite-api",
   "version": "1.0.0",
-  "description": "A modern Hono backend template with Cloudflare Workers and DrizzleORM",
+  "description": "Projsites backend API built with Hono framework, Drizzle ORM, neon postgres database and deployed on Cloudflare Workers.",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts",
