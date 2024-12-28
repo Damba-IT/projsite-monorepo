@@ -16,7 +16,11 @@ export const organizations = pgTable('organizations', {
 export const projects = pgTable('projects', {
   id: serial('id').primaryKey(),
   name: text('name'),
-  organizationId: integer('organization_id').references(() => organizations.id),
+  organization_id: integer('organization_id').references(() => organizations.id),
+  active: boolean('active').default(true),
+  is_deleted: boolean('is_deleted').default(false),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
 });
 
 export const users = pgTable('users', {
@@ -27,7 +31,7 @@ export const users = pgTable('users', {
   phone_number: text('phone'),
   old_phone_number: text('old_phone'),
   password: text('password'),
-  organizationId: integer('organization_id').references(() => organizations.id),
+  organization_id: integer('organization_id').references(() => organizations.id),
   super_admin: boolean('super_admin').default(false),
   image: text('image'),
 });
