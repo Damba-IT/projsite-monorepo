@@ -1,8 +1,16 @@
-import { pgTable, serial, text, integer, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, integer, boolean, timestamp } from 'drizzle-orm/pg-core';
 
 export const organizations = pgTable('organizations', {
   id: serial('id').primaryKey(),
   name: text('name').unique(),
+  active: boolean('active').default(true),
+  is_deleted: boolean('is_deleted').default(false),
+  logo: text('logo'),
+  warehouse_module: boolean('warehouse_module').default(false),
+  created_by_user: text('created_by_user'),
+  created_by_service: text('created_by_service'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
 });
 
 export const projects = pgTable('projects', {
