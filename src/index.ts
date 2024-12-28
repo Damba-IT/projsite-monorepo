@@ -4,7 +4,7 @@ import { logger } from 'hono/logger'
 import { db } from "./middleware/db";
 import { errorHandler } from "./middleware/error-handler";
 //import { rateLimiter } from "./middleware/rate-limiter";
-import { auth } from "./middleware/auth";
+//import { auth } from "./middleware/auth";
 import organizationsRouter from "./routes/organizations";
 import projectsRouter from "./routes/projects";
 import type { HonoEnv } from "./types";
@@ -28,8 +28,8 @@ app.use("/*", logger(customPrintFunc));
 app.use("/*", db);
 
 // Protected routes
-app.use("/organizations/*", auth);
-app.use("/projects/*", auth);
+//app.use("/organizations/*", auth);
+//app.use("/projects/*", auth);
 
 // Routes
 app.route("/organizations", organizationsRouter);

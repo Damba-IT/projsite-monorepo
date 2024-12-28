@@ -8,6 +8,14 @@ const app = new Hono<HonoEnv>();
 
 const createOrgSchema = z.object({
   name: z.string().min(1),
+  active: z.boolean().default(true),
+  is_deleted: z.boolean().default(false),
+  logo: z.string().optional(),
+  warehouse_module: z.boolean().default(false),
+  created_by_user: z.string().optional(),
+  created_by_service: z.string().optional(),
+  created_at: z.date().default(new Date()),
+  updated_at: z.date().default(new Date()),
 });
 
 app

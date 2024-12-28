@@ -9,7 +9,11 @@ const app = new Hono<HonoEnv>();
 
 const createProjectSchema = z.object({
   name: z.string().min(1),
-  organizationId: z.number(),
+  organization_id: z.number(),
+  active: z.boolean().default(true),
+  is_deleted: z.boolean().default(false),
+  created_at: z.date().default(new Date()),
+  updated_at: z.date().default(new Date()),
 });
 
 app
