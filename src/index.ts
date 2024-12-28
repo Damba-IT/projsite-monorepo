@@ -1,7 +1,7 @@
 import { Pool } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { Hono } from "hono";
-import { products } from "./db/schema";
+import { projects } from "./db/schema";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
@@ -17,7 +17,7 @@ app.get("/", zValidator("query", z.object({})), async (c) => {
 
     const db = drizzle(client);
 
-    const result = await db.select().from(products);
+    const result = await db.select().from(projects);
 
     return c.json({
       result,
@@ -34,6 +34,7 @@ app.get("/", zValidator("query", z.object({})), async (c) => {
 });
 
 app.get("/hello-world", async (c) => {
+  console.log("hello-world");
   return c.json({
     "hello": "world"
   });
