@@ -1,43 +1,43 @@
-import { Pool } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
 import { Hono } from "hono";
-import { projects } from "./db/schema";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
+import { swaggerUI } from '@hono/swagger-ui'
+import { logger } from 'hono/logger'
+import { db } from "./middleware/db";
+import { errorHandler } from "./middleware/error-handler";
+//import { rateLimiter } from "./middleware/rate-limiter";
+import { auth } from "./middleware/auth";
+import organizationsRouter from "./routes/organizations";
+import projectsRouter from "./routes/projects";
+import type { HonoEnv } from "./types";
+import { openApiSpec } from './openapi'
+import { customPrintFunc, log } from './utils/logger'
 
-export type Env = {
-  DATABASE_URL: string;
-};
+const app = new Hono<HonoEnv>();
 
-const app = new Hono<{ Bindings: Env }>();
+// Swagger UI
+app.get('/swagger', swaggerUI({
+  url: '/swagger.json'
+}))
 
-app.get("/", zValidator("query", z.object({})), async (c) => {
-  try {
-    const client = new Pool({ connectionString: c.env.DATABASE_URL });
+// Serve OpenAPI spec
+app.get('/swagger.json', (c) => c.json(openApiSpec))
 
-    const db = drizzle(client);
+// Global middleware (order matters)
+app.use("/*", errorHandler);
+app.use("/*", logger(customPrintFunc));
+//app.use("/*", rateLimiter(100, 60000)); // 100 requests per minute??
+app.use("/*", db);
 
-    const result = await db.select().from(projects);
+// Protected routes
+app.use("/organizations/*", auth);
+app.use("/projects/*", auth);
 
-    return c.json({
-      result,
-    });
-  } catch (error) {
-    console.log(error);
-    return c.json(
-      {
-        error,
-      },
-      400
-    );
-  }
-});
+// Routes
+app.route("/organizations", organizationsRouter);
+app.route("/projects", projectsRouter);
 
-app.get("/hello-world", async (c) => {
-  console.log("hello-world");
-  return c.json({
-    "hello": "world"
-  });
+// Basic health check
+app.get("/health", (c) => {
+  return c.json({ status: "ok" });
 });
 
 export default app;
