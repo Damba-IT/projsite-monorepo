@@ -8,14 +8,21 @@ export const openApiSpec = {
   info: {
     title: 'Projsite API',
     version: '1.0.0',
-    description: 'API Documentation'
+    description: 'API Documentation with multiple authentication methods'
   },
   components: {
     securitySchemes: {
-      bearerAuth: {
+      clerkAuth: {
         type: 'http',
         scheme: 'bearer',
-        bearerFormat: 'JWT'
+        bearerFormat: 'JWT',
+        description: 'Clerk authentication for web clients'
+      },
+      serviceAuth: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'X-API-Key',
+        description: 'API key for service-to-service communication'
       }
     },
     schemas: {
@@ -60,7 +67,7 @@ export const openApiSpec = {
     '/health': {
       get: {
         summary: 'Health Check',
-        security: [{ bearerAuth: [] }],
+        security: [],
         responses: {
           '200': {
             description: 'Server is healthy',
@@ -96,7 +103,10 @@ export const openApiSpec = {
     '/organizations': {
       get: {
         summary: 'List Organizations',
-        security: [{ bearerAuth: [] }],
+        security: [
+          { clerkAuth: [] },
+          { serviceAuth: [] }
+        ],
         responses: {
           '200': {
             description: 'List of organizations',
@@ -161,7 +171,10 @@ export const openApiSpec = {
     '/organizations/{id}': {
       get: {
         summary: 'Get Organization by ID',
-        security: [{ bearerAuth: [] }],
+        security: [
+          { clerkAuth: [] },
+          { serviceAuth: [] }
+        ],
         parameters: [
           {
             name: 'id',
@@ -201,7 +214,10 @@ export const openApiSpec = {
       },
       patch: {
         summary: 'Update Organization',
-        security: [{ bearerAuth: [] }],
+        security: [
+          { clerkAuth: [] },
+          { serviceAuth: [] }
+        ],
         parameters: [
           {
             name: 'id',
@@ -246,7 +262,10 @@ export const openApiSpec = {
       },
       delete: {
         summary: 'Delete Organization',
-        security: [{ bearerAuth: [] }],
+        security: [
+          { clerkAuth: [] },
+          { serviceAuth: [] }
+        ],
         parameters: [
           {
             name: 'id',
@@ -274,7 +293,10 @@ export const openApiSpec = {
     '/organizations/{id}/projects': {
       get: {
         summary: 'Get Organization Projects',
-        security: [{ bearerAuth: [] }],
+        security: [
+          { clerkAuth: [] },
+          { serviceAuth: [] }
+        ],
         parameters: [
           {
             name: 'id',
@@ -300,6 +322,34 @@ export const openApiSpec = {
                 }
               }
             }
+          }
+        }
+      }
+    },
+    '/swagger': {
+      get: {
+        summary: 'Swagger UI',
+        security: [
+          { clerkAuth: [] },
+          { serviceAuth: [] }
+        ],
+        responses: {
+          '200': {
+            description: 'Swagger UI page'
+          }
+        }
+      }
+    },
+    '/swagger.json': {
+      get: {
+        summary: 'OpenAPI Specification',
+        security: [
+          { clerkAuth: [] },
+          { serviceAuth: [] }
+        ],
+        responses: {
+          '200': {
+            description: 'OpenAPI specification in JSON format'
           }
         }
       }

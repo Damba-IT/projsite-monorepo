@@ -10,6 +10,10 @@ invocation_logs = false
 [vars]
 CLERK_PUBLISHABLE_KEY = "pk_test_cmlnaHQtcGFyYWtlZXQtNjAuY2xlcmsuYWNjb3VudHMuZGV2JA"
 
+# Run: wrangler secret put DATABASE_URL
+# Run: wrangler secret put CLERK_SECRET_KEY
+# Run: wrangler secret put SERVICE_API_KEY
+
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
