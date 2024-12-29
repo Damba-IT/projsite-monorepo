@@ -3,6 +3,8 @@ import * as schema from "../db/schema";
 
 export type Env = {
   DATABASE_URL: string;
+  CLERK_SECRET_KEY: string;
+  CLERK_PUBLISHABLE_KEY: string;
 };
 
 export type Database = ReturnType<typeof drizzle<typeof schema>>;

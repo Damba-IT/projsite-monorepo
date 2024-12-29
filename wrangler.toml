@@ -7,8 +7,8 @@ enabled = true
 
 invocation_logs = false
 
-# [vars]
-# MY_VAR = "my-variable"
+[vars]
+CLERK_PUBLISHABLE_KEY = "pk_test_cmlnaHQtcGFyYWtlZXQtNjAuY2xlcmsuYWNjb3VudHMuZGV2JA"
 
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
