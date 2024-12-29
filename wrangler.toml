@@ -2,12 +2,8 @@ name = "projsite"
 compatibility_date = "2024-12-27"
 compatibility_flags = [ "nodejs_compat" ]
 
-# Workers Logs configuration
-workers_dev = true
-
-[logs]
+[observability.logs]
 enabled = true
-sampling_rate = 1.0  # 100% sampling rate
 
 # [vars]
 # MY_VAR = "my-variable"
