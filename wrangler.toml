@@ -5,6 +5,8 @@ compatibility_flags = [ "nodejs_compat" ]
 [observability.logs]
 enabled = true
 
+invocation_logs = false
+
 # [vars]
 # MY_VAR = "my-variable"
 
