@@ -35,7 +35,7 @@ app.use("/*", db);
 //app.use("/projects/*", auth);
 //app.use("/swagger", auth);
 
-//TODO:: for booking endpoints investigate how to use websockets to update bookings/calendar... https://hono.dev/docs/helpers/websocket
+//TODO:: for booking endpoints investigate how to use websockets to update bookings/calendar... https://hono.dev/docs/helpers/websocket... https://hono.dev/docs/helpers/streaming??
 
 // Routes
 app.route("/organizations", organizationsRouter);
@@ -47,3 +47,10 @@ app.get("/health", (c) => {
 });
 
 export default app;
+
+
+
+//TODO:: Look into implementing these middlewares:
+// - cors - https://hono.dev/docs/middleware/builtin/cors
+// - ip restrictions - https://hono.dev/docs/middleware/builtin/ip-restriction
+// - csrf - https://hono.dev/docs/middleware/builtin/csrf

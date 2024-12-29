@@ -16,6 +16,7 @@ const colors = {
 
 export const customPrintFunc = (str: string, ...rest: string[]) => {
   const timestamp = new Date().toISOString();
+  //TODO:: use hono request id middleware?? https://hono.dev/docs/middleware/builtin/request-id.... is there big difference in size?? if yes then just use my custom solution below
   const requestId = crypto.randomUUID().slice(0, 8);
   
   // Color the timestamp cyan and requestId magenta
