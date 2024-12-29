@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { organizations } from "../db/schema";
 import type { Database } from "../types";
+import type { CreateOrganization } from "../routes/organizations";
 
 export class OrganizationService {
   constructor(private db: Database) {}
@@ -17,10 +18,10 @@ export class OrganizationService {
     return result;
   }
 
-  async create(name: string) {
+  async create(data: CreateOrganization) {
     const [result] = await this.db
       .insert(organizations)
-      .values({ name })
+      .values(data)
       .returning();
     return result;
   }

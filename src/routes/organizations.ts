@@ -3,6 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import type { HonoEnv } from "../types";
 import { OrganizationService } from "../services/organization-service";
+import { response } from '../utils/response';
 
 const app = new Hono<HonoEnv>();
 
@@ -18,29 +19,36 @@ const createOrgSchema = z.object({
   updated_at: z.date().default(new Date()),
 });
 
+export type CreateOrganization = z.infer<typeof createOrgSchema>;
+
+const idParam = z.object({
+  id: z.coerce.number().int().positive()
+});
+
 app
   .get("/", async (c) => {
     const db = c.get('db');
     const service = new OrganizationService(db);
     const result = await service.findAll();
-    return c.json(result);
+    return response.success(c, result);
   })
   .post("/", zValidator('json', createOrgSchema), async (c) => {
     const db = c.get('db');
     const service = new OrganizationService(db);
-    const { name } = await c.req.json();
-    const result = await service.create(name);
-    return c.json(result, 201);
+    const body = c.req.valid('json');
+    const result = await service.create(body);
+    return response.success(c, result, 201);
   })
-  .get("/:id", async (c) => {
+  .get("/:id", zValidator('param', idParam), async (c) => {
     const db = c.get('db');
     const service = new OrganizationService(db);
-    const id = Number(c.req.param('id'));
+    const { id } = c.req.valid('param');
+
     const result = await service.findById(id);
     if (!result) {
-      return c.json({ message: "Organization not found" }, 404);
+      return response.error(c, "Organization not found", 404);
     }
-    return c.json(result);
+    return response.success(c, result);
   });
 
 export default app; 
