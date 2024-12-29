@@ -1,4 +1,5 @@
 import { pgTable, serial, text, integer, boolean, timestamp } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 export const organizations = pgTable('organizations', {
   id: serial('id').primaryKey(),
@@ -10,7 +11,9 @@ export const organizations = pgTable('organizations', {
   created_by_user: text('created_by_user'),
   created_by_service: text('created_by_service'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
 });
 
 export const projects = pgTable('projects', {
@@ -20,7 +23,9 @@ export const projects = pgTable('projects', {
   active: boolean('active').default(true),
   is_deleted: boolean('is_deleted').default(false),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
 });
 
 export const users = pgTable('users', {

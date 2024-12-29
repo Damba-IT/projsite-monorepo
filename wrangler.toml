@@ -2,8 +2,10 @@ name = "projsite"
 compatibility_date = "2024-12-27"
 compatibility_flags = [ "nodejs_compat" ]
 
-# [vars]
+[vars]
 # MY_VAR = "my-variable"
+# TODO:: add the pasword as secret somehow?? NOT SAFE LIKE THIS!!
+DATABASE_URL="postgresql://projsite_db_owner:JUoRji0n8KzW@ep-tight-sound-a2sympt8-pooler.eu-central-1.aws.neon.tech/projsite_db?sslmode=require"
 
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"

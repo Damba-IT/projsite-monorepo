@@ -1,7 +1,8 @@
 import { eq } from "drizzle-orm";
 import { organizations } from "../db/schema";
 import type { Database } from "../types";
-import type { CreateOrganization } from "../routes/organizations";
+import type { CreateOrganization, UpdateOrganization } from "../routes/organizations";
+import { projects } from "../db/schema";
 
 export class OrganizationService {
   constructor(private db: Database) {}
@@ -26,19 +27,27 @@ export class OrganizationService {
     return result;
   }
 
-  async update(id: number, name: string) {
+  async update(id: number, data: UpdateOrganization) {
     const [result] = await this.db
       .update(organizations)
-      .set({ name })
+      .set(data)
       .where(eq(organizations.id, id))
       .returning();
     return result;
   }
 
   async delete(id: number) {
-    return await this.db
+    const [result] = await this.db
       .delete(organizations)
       .where(eq(organizations.id, id))
       .returning();
+    return result;
+  }
+
+  async getProjects(organizationId: number) {
+    return await this.db
+      .select()
+      .from(projects)
+      .where(eq(projects.organization_id, organizationId));
   }
 } 
