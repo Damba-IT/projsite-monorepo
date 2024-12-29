@@ -35,6 +35,8 @@ app.use("/*", db);
 //app.use("/projects/*", auth);
 //app.use("/swagger", auth);
 
+//TODO:: for booking endpoints investigate how to use websockets to update bookings/calendar... https://hono.dev/docs/helpers/websocket
+
 // Routes
 app.route("/organizations", organizationsRouter);
 app.route("/projects", projectsRouter);
