@@ -1,5 +1,5 @@
 import { MiddlewareHandler } from "hono";
-import { clerkMiddleware } from '@hono/clerk-auth'
+import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
 import type { HonoEnv } from "../types";
 import { HTTPException } from "hono/http-exception";
 
@@ -13,7 +13,13 @@ export const auth: MiddlewareHandler<HonoEnv> = async (c, next) => {
   }
   
   // Otherwise, use Clerk auth
-  return clerkMiddleware()(c, next);
+  await clerkMiddleware()(c, next);
+  
+  // After Clerk middleware, verify that user is authenticated
+  const auth = getAuth(c);
+  if (!auth?.userId) {
+    throw new HTTPException(401, { message: "Unauthorized - No valid authentication provided" });
+  }
 }; 
 
 // Private helper function for service auth

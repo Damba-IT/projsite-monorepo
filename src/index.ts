@@ -11,6 +11,7 @@ import type { HonoEnv } from "./types";
 import { openApiSpec } from './openapi'
 import { customPrintFunc } from './utils/logger'
 import { response } from "./utils/response";
+import { auth } from "./middleware/auth";
 
 const app = new Hono<HonoEnv>();
 
@@ -30,12 +31,13 @@ app.use("/*", prettyJSON());
 app.use("/*", db);
 
 // Protected routes 
-// TODO:: Test clerk auth + service auth. I have not tested the clerk or service auth yet. Therefor i comment it out for now)
-//app.use("/organizations/*", auth);
-//app.use("/projects/*", auth);
-//app.use("/swagger", auth);
+app.use("/organizations/*", auth);
+app.use("/projects/*", auth);
+app.use("/swagger", auth);
 
 //TODO:: for booking endpoints investigate how to use websockets to update bookings/calendar... https://hono.dev/docs/helpers/websocket... https://hono.dev/docs/helpers/streaming??
+//TODO:: protect all routes and specify the routes that should be public. Because 95% will be public we want to avoid specify the once that is protected and should specify the ones that are public.
+//TODO:: Multiple service api keys to keep track of which key is used by which service/domain. Also when using service api key we should log the apikey and also btw the clerk user that is signed in.
 
 // Routes
 app.route("/organizations", organizationsRouter);
