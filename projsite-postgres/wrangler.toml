@@ -1,4 +1,4 @@
-name = "projsite"
+name = "projsite-postgres"
 compatibility_date = "2024-12-27"
 compatibility_flags = [ "nodejs_compat" ]
 

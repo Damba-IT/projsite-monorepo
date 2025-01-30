@@ -3,18 +3,11 @@
   "version": "1.0.0",
   "description": "Projsite API with both PostgreSQL and MongoDB implementations",
   "private": true,
-  "workspaces": [
-    "projsite-postgres",
-    "projsite-mongo"
-  ],
   "scripts": {
-    "dev:pg": "cd projsite-postgres && npm run dev",
-    "dev:mongo": "cd projsite-mongo && npm run dev",
-    "deploy:pg": "cd projsite-postgres && npm run deploy",
-    "deploy:mongo": "cd projsite-mongo && npm run deploy",
-    "install:all": "npm install && npm run install:pg && npm run install:mongo",
-    "install:pg": "cd projsite-postgres && npm install",
-    "install:mongo": "cd projsite-mongo && npm install"
+    "dev:pg": "cd projsite-postgres && bun run dev",
+    "dev:mongo": "cd projsite-mongo && bun run dev",
+    "deploy:pg": "cd projsite-postgres && bun run deploy",
+    "deploy:mongo": "cd projsite-mongo && bun run deploy"
   },
   "keywords": [],
   "author": "",

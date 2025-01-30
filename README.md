@@ -6,6 +6,12 @@ This repository contains two implementations of the Projsite API:
 
 Both implementations share the same API interface and functionality but use different databases.
 
+## Prerequisites
+
+- [Bun](https://bun.sh) installed on your system
+- Node.js 18+ (for some development tools)
+- Docker (optional, for running databases locally)
+
 ## Project Structure
 
 ```
@@ -26,7 +32,7 @@ projsite-api/
 
 1. Install dependencies for both implementations:
 ```bash
-npm run install:all
+bun run install:all
 ```
 
 2. Set up environment variables:
@@ -49,12 +55,12 @@ You can run either implementation in development mode:
 
 - PostgreSQL version:
   ```bash
-  npm run dev:pg
+  bun run dev:pg
   ```
 
 - MongoDB version:
   ```bash
-  npm run dev:mongo
+  bun run dev:mongo
   ```
 
 ## Deployment
@@ -63,12 +69,12 @@ Deploy either implementation to Cloudflare Workers:
 
 - PostgreSQL version:
   ```bash
-  npm run deploy:pg
+  bun run deploy:pg
   ```
 
 - MongoDB version:
   ```bash
-  npm run deploy:mongo
+  bun run deploy:mongo
   ```
 
 ## API Documentation
@@ -88,3 +94,12 @@ Both implementations provide:
 The main difference is in the database layer and ORM used:
 - PostgreSQL version uses Drizzle ORM
 - MongoDB version uses Mongoose
+
+## Performance
+
+Using Bun as the runtime provides several advantages:
+- Faster startup times
+- Better TypeScript performance
+- Native SQLite3 support
+- Compatible with Node.js packages
+- Built-in test runner and bundler
