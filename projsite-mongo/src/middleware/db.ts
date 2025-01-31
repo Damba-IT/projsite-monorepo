@@ -23,7 +23,7 @@ export const db: MiddlewareHandler<HonoEnv> = async (c, next) => {
       await client.connect();
     }
 
-    const db = client.db();
+    const db = client.db('projsite_db');
     c.set('db', db);
     
     await next();

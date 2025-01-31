@@ -1,6 +1,6 @@
 // Collections
 export const Collections = {
-  ORGANIZATIONS: 'organizations',
+  ORGANIZATIONS: 'company',
   PROJECTS: 'projects',
   USERS: 'users',
 } as const;
