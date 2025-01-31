@@ -29,8 +29,8 @@ app.use('*', db);
 import organizationsRouter from './routes/organizations';
 import projectsRouter from './routes/projects';
 
-app.route('/api/organizations', organizationsRouter);
-app.route('/api/projects', projectsRouter);
+app.route('/v1/organizations', organizationsRouter);
+app.route('/v1/projects', projectsRouter);
 
 // Swagger UI
 app.get('/docs', swaggerUI({ url: '/swagger.json' }));

@@ -146,7 +146,7 @@ export const openApiSpec = {
         }
       }
     },
-    '/api/organizations': {
+    '/v1/organizations': {
       get: {
         summary: 'List Organizations',
         security: [
@@ -218,7 +218,7 @@ export const openApiSpec = {
         }
       }
     },
-    '/api/projects': {
+    '/v1/projects': {
       get: {
         summary: 'List Projects',
         security: [
