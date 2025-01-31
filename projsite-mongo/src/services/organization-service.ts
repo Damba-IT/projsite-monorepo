@@ -16,7 +16,6 @@ export class OrganizationService extends BaseService<Organization> {
   async findById(id: string | ObjectId) {
     return await super.findOne({ 
       _id: typeof id === 'string' ? new ObjectId(id) : id,
-      is_deleted: false 
     });
   }
 
