@@ -1,139 +1,65 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
-import { Project } from '../models';
+import type { HonoEnv } from '../types';
+import {
+  createProjectSchema,
+  updateProjectSchema,
+  type CreateProjectInput,
+  type UpdateProjectInput
+} from '../schemas/projects';
+import { ProjectService } from "../services/project-service";
+import { response } from '../utils/response';
+import { idParamSchema } from '../utils/validation';
 
-const router = new Hono();
+const app = new Hono<HonoEnv>();
 
-// Schema for project creation/update
-const projectSchema = z.object({
-  project_id: z.string(),
-  name: z.string(),
-  organization: z.string(), // MongoDB ObjectId as string
-  start_date: z.string().transform(str => new Date(str)),
-  end_date: z.string().transform(str => new Date(str)),
-  status: z.enum(['active', 'inactive', 'deleted']).optional(),
-  location_address: z.string().optional(),
-  location_formatted_address: z.string().optional(),
-  location_place_id: z.string().optional(),
-  location_lat: z.string().optional(),
-  location_lng: z.string().optional(),
-  settings: z.object({
-    waste_booking_color: z.string().optional(),
-    resource_booking_color: z.string().optional(),
-    information: z.string().optional(),
-    shipment_module: z.boolean().optional(),
-    checkpoint_module: z.boolean().optional(),
-    warehouse_module: z.boolean().optional(),
-    waste_module: z.boolean().optional(),
-    inbox_module: z.boolean().optional(),
-    auto_approval: z.boolean().optional(),
-    waste_auto_approval: z.boolean().optional(),
-    sub_projects_enabled: z.boolean().optional()
-  }).optional(),
-  form_validation_rules: z.object({
-    shipment_booking: z.object({
-      contractor: z.boolean().optional(),
-      responsible_person: z.boolean().optional(),
-      supplier: z.boolean().optional(),
-      unloading_zone: z.boolean().optional(),
-      prevent_zone_collide: z.boolean().optional(),
-      sub_project: z.boolean().optional(),
-      resources: z.boolean().optional(),
-      env_data: z.boolean().optional()
-    }).optional(),
-    resource_booking: z.object({
-      contractor: z.boolean().optional(),
-      responsible_person: z.boolean().optional(),
-      sub_project: z.boolean().optional(),
-      resources: z.boolean().optional()
-    }).optional(),
-    waste_booking: z.object({
-      sub_project: z.boolean().optional(),
-      waste: z.boolean().optional()
-    }).optional()
-  }).optional()
-});
-
-// Get all projects
-router.get('/', async (c) => {
-  try {
-    const projects = await Project.find({ status: { $ne: 'deleted' } })
-      .populate('organization');
-    return c.json(projects);
-  } catch (error) {
-    return c.json({ error: 'Failed to fetch projects' }, 500);
-  }
-});
-
-// Get project by ID
-router.get('/:id', async (c) => {
-  try {
-    const id = c.req.param('id');
-    const project = await Project.findById(id).populate('organization');
-    
-    if (!project) {
-      return c.json({ error: 'Project not found' }, 404);
+app
+  .get("/", async (c) => {
+    const db = c.get('db');
+    const service = new ProjectService(db);
+    const result = await service.findAll();
+    return response.success(c, result);
+  })
+  .post("/", zValidator('json', createProjectSchema), async (c) => {
+    const db = c.get('db');
+    const service = new ProjectService(db);
+    const data = c.req.valid('json');
+    const result = await service.create(data);
+    if (!result) {
+      return response.error(c, "Failed to create project", 400);
     }
-    
-    return c.json(project);
-  } catch (error) {
-    return c.json({ error: 'Failed to fetch project' }, 500);
-  }
-});
-
-// Create project
-router.post('/', zValidator('json', projectSchema), async (c) => {
-  try {
-    const data = await c.req.json();
-    const project = new Project(data);
-    await project.save();
-    return c.json(project, 201);
-  } catch (error) {
-    return c.json({ error: 'Failed to create project' }, 500);
-  }
-});
-
-// Update project
-router.put('/:id', zValidator('json', projectSchema), async (c) => {
-  try {
-    const id = c.req.param('id');
-    const data = await c.req.json();
-    
-    const project = await Project.findByIdAndUpdate(
-      id,
-      { $set: data },
-      { new: true }
-    ).populate('organization');
-    
-    if (!project) {
-      return c.json({ error: 'Project not found' }, 404);
+    return response.success(c, result, 201);
+  })
+  .get("/:id", zValidator('param', idParamSchema), async (c) => {
+    const db = c.get('db');
+    const service = new ProjectService(db);
+    const id = c.req.valid('param').id;
+    const result = await service.findById(id);
+    if (!result) {
+      return response.error(c, "Project not found", 404);
     }
-    
-    return c.json(project);
-  } catch (error) {
-    return c.json({ error: 'Failed to update project' }, 500);
-  }
-});
-
-// Delete project (soft delete)
-router.delete('/:id', async (c) => {
-  try {
-    const id = c.req.param('id');
-    const project = await Project.findByIdAndUpdate(
-      id,
-      { $set: { status: 'deleted' } },
-      { new: true }
-    );
-    
-    if (!project) {
-      return c.json({ error: 'Project not found' }, 404);
+    return response.success(c, result);
+  })
+  .put("/:id", zValidator('param', idParamSchema), zValidator('json', updateProjectSchema), async (c) => {
+    const db = c.get('db');
+    const service = new ProjectService(db);
+    const id = c.req.valid('param').id;
+    const data = c.req.valid('json');
+    const result = await service.update(id, data);
+    if (!result) {
+      return response.error(c, "Project not found", 404);
     }
-    
-    return c.json({ message: 'Project deleted successfully' });
-  } catch (error) {
-    return c.json({ error: 'Failed to delete project' }, 500);
-  }
-});
+    return response.success(c, result);
+  })
+  .delete("/:id", zValidator('param', idParamSchema), async (c) => {
+    const db = c.get('db');
+    const service = new ProjectService(db);
+    const id = c.req.valid('param').id;
+    const result = await service.softDelete(id);
+    if (!result) {
+      return response.error(c, "Project not found", 404);
+    }
+    return response.success(c, result);
+  });
 
-export default router; 
+export default app; 

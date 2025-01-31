@@ -4,9 +4,10 @@ import { prettyJSON } from 'hono/pretty-json';
 import { logger } from 'hono/logger';
 import { swaggerUI } from '@hono/swagger-ui';
 import { clerkMiddleware } from '@hono/clerk-auth';
-import { connectDB } from './utils/db';
+import { db } from './middleware/db';
+import type { HonoEnv } from './types';
 
-const app = new Hono();
+const app = new Hono<HonoEnv>();
 
 // Middleware
 app.use('*', cors());
@@ -19,15 +20,8 @@ app.use('*', clerkMiddleware({
   secretKey: process.env.CLERK_SECRET_KEY || '',
 }));
 
-// Connect to MongoDB
-app.use('*', async (c, next) => {
-  try {
-    await connectDB();
-    await next();
-  } catch (error) {
-    return c.json({ error: 'Database connection failed' }, 500);
-  }
-});
+// Database middleware
+app.use('*', db);
 
 // Routes
 import organizationsRouter from './routes/organizations';

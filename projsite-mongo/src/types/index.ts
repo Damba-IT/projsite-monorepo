@@ -1,6 +1,18 @@
-import { Document } from 'mongoose';
+import { ObjectId, Db } from 'mongodb';
 
 export type ProjectStatus = 'active' | 'inactive' | 'deleted';
+
+// Environment type for Hono
+export interface HonoEnv {
+  Bindings: {
+    MONGODB_URI: string;
+    CLERK_PUBLISHABLE_KEY: string;
+    CLERK_SECRET_KEY: string;
+  };
+  Variables: {
+    db: Db;
+  };
+}
 
 export interface OrganizationSettings {
   warehouse_module: boolean;
@@ -43,7 +55,8 @@ export interface FormValidationRules {
   };
 }
 
-export interface IOrganization extends Document {
+export interface Organization {
+  _id?: ObjectId;
   name: string;
   active: boolean;
   is_deleted: boolean;
@@ -55,10 +68,11 @@ export interface IOrganization extends Document {
   updated_at: Date;
 }
 
-export interface IProject extends Document {
+export interface Project {
+  _id?: ObjectId;
   project_id: string;
   name: string;
-  organization: IOrganization['_id'];
+  organization_id: ObjectId;
   start_date: Date;
   end_date: Date;
   status: ProjectStatus;
@@ -75,14 +89,15 @@ export interface IProject extends Document {
   form_validation_rules: FormValidationRules;
 }
 
-export interface IUser extends Document {
+export interface User {
+  _id?: ObjectId;
   email: string;
   first_name?: string;
   last_name?: string;
   phone_number?: string;
   old_phone_number?: string;
   password?: string;
-  organization?: IOrganization['_id'];
+  organization_id?: ObjectId;
   super_admin: boolean;
   image?: string;
 } 

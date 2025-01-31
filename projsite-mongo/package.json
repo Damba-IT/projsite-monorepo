@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231218.0",
+    "@types/mongodb": "^4.0.7",
     "dotenv": "^16.4.7",
     "typescript": "^5.3.3",
     "wrangler": "^3.22.4"
@@ -17,11 +18,9 @@
     "@hono/clerk-auth": "^2.0.0",
     "@hono/swagger-ui": "^0.5.0",
     "@hono/zod-validator": "^0.4.2",
-    "@types/mongoose": "^5.11.96",
     "@types/node": "^22.12.0",
     "hono": "^3.12.12",
     "mongodb": "^6.3.0",
-    "mongoose": "^8.9.5",
     "zod": "^3.24.1"
   },
   "module": "src/index.ts",
