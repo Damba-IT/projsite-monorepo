@@ -11,6 +11,7 @@ import { swaggerUI } from '@hono/swagger-ui';
 import { clerkMiddleware } from '@hono/clerk-auth';
 import { connectDB } from './utils/db';
 
+
 const app = new Hono();
 
 // Middleware
@@ -19,26 +20,18 @@ app.use('*', prettyJSON());
 app.use('*', logger());
 
 // Auth middleware
-app.use('*', clerkMiddleware({
-  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || '',
-  secretKey: process.env.CLERK_SECRET_KEY || '',
-}));
-
-// Connect to MongoDB
 app.use('*', async (c, next) => {
-  try {
-    await connectDB();
-    await next();
-  } catch (error) {
-    return c.json({ error: 'Database connection failed' }, 500);
-  }
+  const publishableKey = c.env.CLERK_PUBLISHABLE_KEY || '';
+  const secretKey = c.env.CLERK_SECRET_KEY || '';
+  return clerkMiddleware({ publishableKey, secretKey })(c, next);
 });
 
 // Example route that queries 'projects' collection
 app.get('/mongo-projects', async (c) => {
   try {
-    const db = await connectDB();
-    const projects = await db.collection('projects').find({}).limit(10).toArray();
+    const db = await connectDB(c.env.MONGODB_URI);
+    const projects = await db.collection('projects').findOne({});
+    console.log(projects);
     return c.json({ success: true, data: projects });
   } catch (err) {
     return c.json({ error: (err as Error).message }, 500);

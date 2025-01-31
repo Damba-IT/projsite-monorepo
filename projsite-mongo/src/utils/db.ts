@@ -2,13 +2,12 @@
 import { MongoClient, Db } from 'mongodb';
 
 // REPLACE WITH YOUR CONNECTION STRING
-const MONGODB_URI = process.env.MONGODB_URI;
 let cachedDb: Db | null = null;
 
 /**
  * Return a MongoDB Db instance, creating it if necessary.
  */
-export async function connectDB(): Promise<Db> {
+export async function connectDB(MONGODB_URI: string): Promise<Db> {
   if (cachedDb) {
     return cachedDb;
   }
