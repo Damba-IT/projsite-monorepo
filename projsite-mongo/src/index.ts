@@ -7,6 +7,7 @@ import { swaggerUI } from '@hono/swagger-ui';
 import { clerkMiddleware } from '@hono/clerk-auth';
 import { db } from './middleware/db';
 import type { HonoEnv } from './types';
+import { openApiSpec } from './openapi';
 
 const app = new Hono<HonoEnv>();
 
@@ -32,7 +33,10 @@ app.route('/api/organizations', organizationsRouter);
 app.route('/api/projects', projectsRouter);
 
 // Swagger UI
-app.get('/swagger', swaggerUI({ url: '/docs' }));
+app.get('/docs', swaggerUI({ url: '/swagger.json' }));
+
+// Serve OpenAPI spec
+app.get('/swagger.json', (c) => c.json(openApiSpec));
 
 // Health check
 app.get('/health', (c) => c.json({ status: 'ok' }));
