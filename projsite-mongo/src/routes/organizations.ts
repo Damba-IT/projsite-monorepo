@@ -3,7 +3,8 @@ import { zValidator } from '@hono/zod-validator';
 import type { HonoEnv } from '../types';
 import {
   createOrganizationSchema,
-  updateOrganizationSchema
+  updateOrganizationSchema,
+  searchOrganizationSchema
 } from '../schemas/organizations';
 import { OrganizationService } from '../services/organization-service';
 import { response } from '../utils/response';
@@ -17,6 +18,18 @@ app
     const service = new OrganizationService(db);
     const result = await service.findAll();
     return response.success(c, result);
+  })
+  .get('/search', zValidator('query', searchOrganizationSchema), async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const { query } = c.req.valid('query');
+
+    try {
+      const results = await service.searchCompanies(query);
+      return response.success(c, results);
+    } catch (error: any) {
+      return response.error(c, error.message, 500);
+    }
   })
   .post('/', zValidator('json', createOrganizationSchema), async (c) => {
     const db = c.get('db');

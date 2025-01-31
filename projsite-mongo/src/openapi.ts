@@ -216,6 +216,72 @@ export const openApiSpec = {
             }
           }
         }
+      },
+      '/search': {
+        get: {
+          summary: 'Search Organizations',
+          security: [
+            { clerkAuth: [] },
+            { serviceAuth: [] }
+          ],
+          parameters: [
+            {
+              name: 'query',
+              in: 'query',
+              required: true,
+              schema: {
+                type: 'string',
+                minLength: 1,
+                maxLength: 100
+              },
+              description: 'Search query for organization names'
+            }
+          ],
+          responses: {
+            '200': {
+              description: 'Search results',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          data: {
+                            type: 'array',
+                            items: {
+                              type: 'object',
+                              properties: {
+                                _id: { type: 'string' },
+                                company_name: { type: 'string' },
+                                is_organization: { type: 'boolean' },
+                                active: { type: 'boolean' }
+                              }
+                            }
+                          },
+                          noMatch: { type: 'boolean' },
+                          message: { type: 'string' }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            '500': {
+              description: 'Server error',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/ApiResponse'
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     '/v1/projects': {

@@ -56,4 +56,56 @@ export class OrganizationService extends BaseService<Organization> {
 
     return projects;
   }
+
+  async searchCompanies(query: string) {
+    if (!query || query.trim() === '') {
+      throw new Error('Invalid or missing company name');
+    }
+
+    const pipeline = [
+      {
+        $search: {
+          index: 'companyAutoSuggestion',
+          autocomplete: {
+            query: query,
+            path: 'company_name',
+            tokenOrder: 'sequential',
+            fuzzy: {
+              maxEdits: 1,
+              maxExpansions: 10,
+            }
+          },
+        },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $project: {
+          company_name: 1,
+          is_organization: 1,
+          active: 1
+        },
+      },
+    ];
+
+    try {
+      const companies = await this.collection.aggregate(pipeline).toArray();
+      
+      if (companies.length === 0) {
+        return {
+          noMatch: true,
+          message: 'No matching document found',
+          data: [],
+        };
+      }
+
+      return {
+        data: companies,
+      };
+    } catch (error: any) {
+      console.error('Error occurred while fetching companies:', error);
+      throw new Error(error.message);
+    }
+  }
 } 

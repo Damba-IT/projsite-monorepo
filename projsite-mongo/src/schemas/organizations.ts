@@ -38,6 +38,13 @@ export const organizationResponseSchema = baseOrganizationSchema.extend({
   updated_at: z.date()
 });
 
+// Search query schema
+export const searchOrganizationSchema = z.object({
+  query: z.string().min(1).max(100)
+});
+
+export type SearchOrganizationQuery = z.infer<typeof searchOrganizationSchema>;
+
 // Type inference
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>;
 export type UpdateOrganizationInput = z.infer<typeof updateOrganizationSchema>;
