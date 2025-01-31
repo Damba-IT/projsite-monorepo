@@ -1,38 +1,21 @@
-import mongoose from 'mongoose';
+// utils/db.ts
+import { MongoClient, Db } from 'mongodb';
 
-let isConnected = false;
+// REPLACE WITH YOUR CONNECTION STRING
+const MONGODB_URI = process.env.MONGODB_URI;
+let cachedDb: Db | null = null;
 
-export const connectDB = async () => {
-  if (isConnected) {
-    return;
+/**
+ * Return a MongoDB Db instance, creating it if necessary.
+ */
+export async function connectDB(): Promise<Db> {
+  if (cachedDb) {
+    return cachedDb;
   }
+  const client = new MongoClient(MONGODB_URI);
+  await client.connect();
 
-  const MONGODB_URI = process.env.MONGODB_URI;
-  if (!MONGODB_URI) {
-    throw new Error('MONGODB_URI is not defined in environment variables');
-  }
-
-  try {
-    await mongoose.connect(MONGODB_URI);
-    isConnected = true;
-    console.log('MongoDB connected successfully');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    throw error;
-  }
-};
-
-export const disconnectDB = async () => {
-  if (!isConnected) {
-    return;
-  }
-
-  try {
-    await mongoose.disconnect();
-    isConnected = false;
-    console.log('MongoDB disconnected successfully');
-  } catch (error) {
-    console.error('MongoDB disconnection error:', error);
-    throw error;
-  }
-}; 
+  // "projsite" or any other DB name from the cluster:
+  cachedDb = client.db('projsite_db'); 
+  return cachedDb;
+}

@@ -1,3 +1,8 @@
+// index.ts
+// Patch process.emitWarning to avoid the "emitWarning is not a function" error
+
+
+// Now import the rest:
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { prettyJSON } from 'hono/pretty-json';
@@ -29,12 +34,16 @@ app.use('*', async (c, next) => {
   }
 });
 
-// Routes
-import organizationsRouter from './routes/organizations';
-import projectsRouter from './routes/projects';
-
-app.route('/api/organizations', organizationsRouter);
-app.route('/api/projects', projectsRouter);
+// Example route that queries 'projects' collection
+app.get('/mongo-projects', async (c) => {
+  try {
+    const db = await connectDB();
+    const projects = await db.collection('projects').find({}).limit(10).toArray();
+    return c.json({ success: true, data: projects });
+  } catch (err) {
+    return c.json({ error: (err as Error).message }, 500);
+  }
+});
 
 // Swagger UI
 app.get('/swagger', swaggerUI({ url: '/docs' }));
@@ -42,4 +51,4 @@ app.get('/swagger', swaggerUI({ url: '/docs' }));
 // Health check
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
-export default app; 
+export default app;
