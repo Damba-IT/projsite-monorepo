@@ -38,7 +38,34 @@ app.get('/docs', swaggerUI({ url: '/swagger.json' }));
 // Serve OpenAPI spec
 app.get('/swagger.json', (c) => c.json(openApiSpec));
 
-// Health check
-app.get('/health', (c) => c.json({ status: 'ok' }));
+// Health checks
+app.get('/health', async (c) => {
+  try {
+    const db = c.get('db');
+    const startTime = Date.now();
+    
+    // Test MongoDB connection with a ping
+    await db.command({ ping: 1 });
+    const responseTime = Date.now() - startTime;
+
+    return c.json({
+      status: 'healthy',
+      mongodb: {
+        status: 'connected',
+        responseTime: `${responseTime}ms`
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    return c.json({
+      status: 'unhealthy',
+      mongodb: {
+        status: 'disconnected',
+        error: error.message
+      },
+      timestamp: new Date().toISOString()
+    }, 503);
+  }
+});
 
 export default app; 

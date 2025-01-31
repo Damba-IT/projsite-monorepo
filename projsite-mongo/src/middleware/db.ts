@@ -7,7 +7,14 @@ let client: MongoClient | null = null;
 export const db: MiddlewareHandler<HonoEnv> = async (c, next) => {
   try {
     if (!client) {
-      client = new MongoClient(c.env.MONGODB_URI, {
+      // Get MongoDB URI from either context.env (Cloudflare Workers) or process.env (Bun Runtime)
+      const mongoUri = c.env?.MONGODB_URI || process.env.MONGODB_URI;
+      
+      if (!mongoUri) {
+        throw new Error('MongoDB URI is not defined');
+      }
+
+      client = new MongoClient(mongoUri, {
         maxPoolSize: 1,
         minPoolSize: 0,
         maxIdleTimeMS: 5000,
