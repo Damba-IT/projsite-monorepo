@@ -1,7 +1,8 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { prettyJSON } from 'hono/pretty-json';
 import { logger } from 'hono/logger';
+import { prettyJSON } from 'hono/pretty-json';
+import { customPrintFunc } from './utils/logger';
 import { swaggerUI } from '@hono/swagger-ui';
 import { clerkMiddleware } from '@hono/clerk-auth';
 import { db } from './middleware/db';
@@ -12,7 +13,7 @@ const app = new Hono<HonoEnv>();
 // Middleware
 app.use('*', cors());
 app.use('*', prettyJSON());
-app.use('*', logger());
+app.use('*', logger(customPrintFunc));
 
 // Auth middleware
 app.use('*', clerkMiddleware({
