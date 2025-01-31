@@ -12,4 +12,7 @@ invocation_logs = false
 
 
 [alias]
+"dns" = "./node_modules/cf-mongodb-polyfills/src/dns.ts"
+"net" = "./node_modules/cf-mongodb-polyfills/src/net.ts"
+"tls" = "./node_modules/cf-mongodb-polyfills/src/tls.ts"
 
