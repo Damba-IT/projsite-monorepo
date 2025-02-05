@@ -3,6 +3,7 @@ import { BaseService } from './base-service';
 import { Collections } from '../utils/collections';
 import type { Project, ProjectStatus, Organization, ProjectSettings, FormValidationRules } from '../types';
 import type { CreateProjectInput, UpdateProjectInput } from '../schemas/projects';
+import { toObjectId } from '../utils/validation';
 
 type ProjectWithOrg = WithId<Project> & { organization: WithId<Organization> | null };
 
@@ -18,7 +19,7 @@ export class ProjectService extends BaseService<Project> {
 
   async findById(id: string | ObjectId): Promise<ProjectWithOrg | null> {
     const project = await super.findOne({ 
-      _id: this.toObjectId(id),
+      _id: toObjectId(id),
       status: { $ne: 'deleted' as ProjectStatus }
     });
 
@@ -114,7 +115,7 @@ export class ProjectService extends BaseService<Project> {
   }
 
   async findByOrganization(organizationId: string | ObjectId): Promise<ProjectWithOrg[]> {
-    const _id = this.toObjectId(organizationId);
+    const _id = toObjectId(organizationId);
     
     // First verify organization exists
     const organization = await this.db.collection<Organization>(Collections.ORGANIZATIONS).findOne({ 
@@ -175,9 +176,5 @@ export class ProjectService extends BaseService<Project> {
       ...project,
       organization: orgMap.get(project.organization_id.toString()) || null
     }));
-  }
-
-  protected toObjectId(id: string | ObjectId): ObjectId {
-    return typeof id === 'string' ? new ObjectId(id) : id;
   }
 } 

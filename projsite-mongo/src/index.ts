@@ -28,18 +28,20 @@ app.use('*', db);
 // Routes
 import organizationsRouter from './routes/organizations';
 import projectsRouter from './routes/projects';
+import ninjaRouter from './routes/ninja';
 
-app.route('/v1/organizations', organizationsRouter);
-app.route('/v1/projects', projectsRouter);
+app.route('/api/v1/organizations', organizationsRouter);
+app.route('/api/v1/projects', projectsRouter);
+app.route('/api/v1/ninja', ninjaRouter);
 
 // Swagger UI
-app.get('/docs', swaggerUI({ url: '/swagger.json' }));
+app.get('/api/docs', swaggerUI({ url: '/swagger.json' }));
 
 // Serve OpenAPI spec
-app.get('/swagger.json', (c) => c.json(openApiSpec));
+app.get('/api/swagger.json', (c) => c.json(openApiSpec));
 
 // Health checks
-app.get('/health', async (c) => {
+app.get('/api/health', async (c) => {
   try {
     const db = c.get('db');
     const startTime = Date.now();
