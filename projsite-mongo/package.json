@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Projsites backend API built with Hono framework, MongoDB, and deployed on Cloudflare Workers.",
   "scripts": {
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/index.ts",
+    "watch": "bun --watch src/index.ts"
   },
   "devDependencies": {
     "dotenv": "^16.4.7",
