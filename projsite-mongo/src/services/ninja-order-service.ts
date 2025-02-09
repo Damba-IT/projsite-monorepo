@@ -3,7 +3,7 @@ import { BaseService } from './base-service';
 import { Collections } from '../utils/collections';
 import { toObjectId } from '../utils/validation';
 import type { NinjaOrder } from '@projsite/types/types';
-import type { CreateNinjaOrderInput, UpdateNinjaOrderInput, NinjaOrderStatus } from '@projsite/types/schemas';
+import type { CreateNinjaOrder, UpdateNinjaOrder, NinjaOrderStatus } from '@projsite/types/schemas';
 
 export class NinjaOrderService extends BaseService<NinjaOrder> {
   constructor(db: Db) {
@@ -21,34 +21,36 @@ export class NinjaOrderService extends BaseService<NinjaOrder> {
     });
   }
 
-  async create(data: CreateNinjaOrderInput) {
+  async create(data: CreateNinjaOrder) {
     const newNinjaOrder: Omit<NinjaOrder, '_id'> = {
-      total_cost: data.total_cost,
-      status: 'pending' as NinjaOrderStatus,
-      created_by_user: data.created_by_user,
-      created_by_service: data.created_by_service,
-      organization_id: data.organization_id,
-      service_type: data.service_type,
-      created_at: new Date(),
-      updated_at: new Date(),
-      notes: data.notes || '',
+        service_type: data.service_type,
+        service_form_values: data.service_form_values,
+        company_id: data.company_id,
+        total_cost: data.total_cost,
+        status: 'pending' as NinjaOrderStatus,
+        notes: data.notes || '',
+        created_by_user: data.created_by_user,
+        created_by_service: data.created_by_service,
+        last_modified_by: data.created_by_user,
+        created_at: new Date(),
+        updated_at: new Date(),
     };
 
     return await super.create(newNinjaOrder);
   }
 
-  async update(id: string | ObjectId, data: UpdateNinjaOrderInput) {
+  async update(id: string | ObjectId, data: UpdateNinjaOrder) {
     const updateData: Partial<NinjaOrder> = {
       ...(data.total_cost && { total_cost: data.total_cost }),
       ...(data.status && { status: data.status }),
       ...(data.notes && { notes: data.notes }),
-      ...(data.metadata && { metadata: data.metadata }),
+      ...(data.service_form_values && { service_form_values: data.service_form_values }),
       updated_at: new Date()
     };
 
     return await super.update(id, updateData);
   }
-  
+
   async softDelete(id: string | ObjectId) {
     return await super.update(id, { 
       status: 'deleted' as NinjaOrderStatus,
