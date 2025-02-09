@@ -1,99 +1,89 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
-import { Organization } from '../models';
+import type { HonoEnv } from '../types';
+import {
+  createOrganizationSchema,
+  updateOrganizationSchema,
+  searchOrganizationSchema
+} from '../schemas/organizations';
+import { OrganizationService } from '../services/organization-service';
+import { response } from '../utils/response';
+import { idParamSchema } from '../utils/validation';
 
-const router = new Hono();
+const app = new Hono<HonoEnv>();
 
-// Schema for organization creation/update
-const organizationSchema = z.object({
-  name: z.string().min(1),
-  active: z.boolean().optional(),
-  is_deleted: z.boolean().optional(),
-  logo: z.string().optional(),
-  settings: z.object({
-    warehouse_module: z.boolean()
-  }).optional(),
-});
+app
+  .get('/', async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const result = await service.findAll();
+    return response.success(c, result);
+  })
+  .get('/search', zValidator('query', searchOrganizationSchema), async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const { query } = c.req.valid('query');
 
-// Get all organizations
-router.get('/', async (c) => {
-  try {
-    const organizations = await Organization.find({ is_deleted: false });
-    return c.json(organizations);
-  } catch (error) {
-    return c.json({ error: 'Failed to fetch organizations' }, 500);
-  }
-});
-
-// Get organization by ID
-router.get('/:id', async (c) => {
-  try {
-    const id = c.req.param('id');
-    const organization = await Organization.findById(id);
-    
-    if (!organization) {
-      return c.json({ error: 'Organization not found' }, 404);
+    try {
+      const results = await service.searchCompanies(query);
+      return response.success(c, results);
+    } catch (error: any) {
+      return response.error(c, error.message, 500);
     }
-    
-    return c.json(organization);
-  } catch (error) {
-    return c.json({ error: 'Failed to fetch organization' }, 500);
-  }
-});
-
-// Create organization
-router.post('/', zValidator('json', organizationSchema), async (c) => {
-  try {
-    const data = await c.req.json();
-    const organization = new Organization(data);
-    await organization.save();
-    return c.json(organization, 201);
-  } catch (error) {
-    return c.json({ error: 'Failed to create organization' }, 500);
-  }
-});
-
-// Update organization
-router.put('/:id', zValidator('json', organizationSchema), async (c) => {
-  try {
-    const id = c.req.param('id');
-    const data = await c.req.json();
-    
-    const organization = await Organization.findByIdAndUpdate(
-      id,
-      { $set: data },
-      { new: true }
-    );
-    
-    if (!organization) {
-      return c.json({ error: 'Organization not found' }, 404);
+  })
+  .post('/', zValidator('json', createOrganizationSchema), async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const data = c.req.valid('json');
+    const result = await service.create(data);
+    if (!result) {
+      return response.error(c, 'Failed to create organization', 400);
     }
-    
-    return c.json(organization);
-  } catch (error) {
-    return c.json({ error: 'Failed to update organization' }, 500);
-  }
-});
-
-// Delete organization (soft delete)
-router.delete('/:id', async (c) => {
-  try {
-    const id = c.req.param('id');
-    const organization = await Organization.findByIdAndUpdate(
-      id,
-      { $set: { is_deleted: true } },
-      { new: true }
-    );
-    
-    if (!organization) {
-      return c.json({ error: 'Organization not found' }, 404);
+    return response.success(c, result, 201);
+  })
+  .get('/:id', zValidator('param', idParamSchema), async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const id = c.req.valid('param').id;
+    const result = await service.findById(id);
+    if (!result) {
+      return response.error(c, 'Organization not found', 404);
     }
-    
-    return c.json({ message: 'Organization deleted successfully' });
-  } catch (error) {
-    return c.json({ error: 'Failed to delete organization' }, 500);
-  }
-});
+    return response.success(c, result);
+  })
+  .put('/:id', zValidator('param', idParamSchema), zValidator('json', updateOrganizationSchema), async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const id = c.req.valid('param').id;
+    const data = c.req.valid('json');
+    const result = await service.update(id, data);
+    if (!result) {
+      return response.error(c, 'Organization not found', 404);
+    }
+    return response.success(c, result);
+  })
+  .delete('/:id', zValidator('param', idParamSchema), async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const id = c.req.valid('param').id;
+    const result = await service.softDelete(id);
+    if (!result) {
+      return response.error(c, 'Organization not found', 404);
+    }
+    return response.success(c, result);
+  })
+  .get('/:id/projects', zValidator('param', idParamSchema), async (c) => {
+    const db = c.get('db');
+    const service = new OrganizationService(db);
+    const id = c.req.valid('param').id;
 
-export default router; 
+    const organization = await service.findById(id);
+    if (!organization) {
+      return response.error(c, 'Organization not found', 404);
+    }
+
+    const projects = await service.getProjects(id);
+    return response.success(c, projects);
+  });
+
+export default app; 
