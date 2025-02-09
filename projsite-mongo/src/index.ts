@@ -12,17 +12,6 @@ import { openApiSpec } from './openapi';
 // Initialize Hono App
 const app = new Hono<HonoEnv>();
 
-// MongoDB Connection
-const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/projsite_db';
-mongoose.connect(mongoUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('Mongoose connected to', mongoUri);
-}).catch((err) => {
-  console.error('Mongoose connection error:', err);
-});
-
 // Middleware
 app.use('*', cors());
 app.use('*', prettyJSON());

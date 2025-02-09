@@ -2,7 +2,7 @@
 
 This is the MongoDB version of the Projsite API, built with:
 - Hono framework
-- MongoDB/Mongoose
+- MongoDB
 - TypeScript
 - Cloudflare Workers
 - Clerk Authentication

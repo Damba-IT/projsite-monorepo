@@ -2,7 +2,7 @@
 
 This repository contains two implementations of the Projsite API:
 1. PostgreSQL version (using Drizzle ORM)
-2. MongoDB version (using Mongoose)
+2. MongoDB version (using MongoDb)
 
 Both implementations share the same API interface and functionality but use different databases.
 
@@ -93,7 +93,7 @@ Both implementations provide:
 
 The main difference is in the database layer and ORM used:
 - PostgreSQL version uses Drizzle ORM
-- MongoDB version uses Mongoose
+- MongoDB version uses MongoDB
 
 ## Performance
 

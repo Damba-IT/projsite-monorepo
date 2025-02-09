@@ -1,6 +1,7 @@
 // src/routes/bookings.ts
 import { Hono } from 'hono';
 import { BookingsService } from '../services/bookings-service';
+import type { HonoEnv } from '../types';
 
 interface GetBookingsParams {
   project_id: string;
@@ -14,12 +15,13 @@ interface GetBookingsParams {
   isConfirmed?: boolean;
 }
 
-const bookingsRouter = new Hono();
-const bookingsService = new BookingsService();
+const bookingsRouter = new Hono<HonoEnv>();
 
 // GET /api/bookings?project_id=...&startDate=...&endDate=...&...
 bookingsRouter.get('/', async (c) => {
   try {
+    const db = c.get('db');
+
     const project_id = c.req.query('project_id');
     const startDate = c.req.query('startDate');
     const endDate = c.req.query('endDate');
@@ -46,7 +48,7 @@ bookingsRouter.get('/', async (c) => {
       isConfirmed
     };
 
-    const result = await bookingsService.getBookings(params);
+    const result = await BookingsService.getBookings(db, params);
     return c.json(result, result.success ? 200 : 400);
   } catch (error: any) {
     return c.json({ success: false, error: error.message }, 500);

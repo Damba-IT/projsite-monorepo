@@ -1,6 +1,7 @@
 // src/services/BookingsService.ts
-import mongoose, { Types } from 'mongoose';
+import { ObjectId, type Db, type Collection } from 'mongodb';
 import PipelineService from './pipeline-service';
+import type { ServiceResponse } from '../types';
 
 // Define the input and output types.
 interface GetBookingsParams {
@@ -15,14 +16,8 @@ interface GetBookingsParams {
   isConfirmed?: boolean;
 }
 
-interface ServiceResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
-
 export class BookingsService {
-  async getBookings(params: GetBookingsParams): Promise<ServiceResponse> {
+  static async getBookings(db: Db, params: GetBookingsParams): Promise<ServiceResponse> {
     try {
       const {
         project_id,
@@ -37,13 +32,13 @@ export class BookingsService {
       } = params;
 
       if (!project_id || !startDate || !endDate) {
-        return { success: false, error: "Missing required parameters. Please provide project_id, startDate, and endDate." };
+        return { success: false, error: "Missing required parameters" };
       }
 
-      const projectObjectId = new Types.ObjectId(project_id);
-      const db = mongoose.connection.db;
+      const projectObjectId = new ObjectId(project_id);
       const projectsCollection = db.collection("projects");
       const project = await projectsCollection.findOne({ _id: projectObjectId });
+      
       if (!project) {
         return { success: false, error: "Project not found" };
       }
@@ -54,7 +49,7 @@ export class BookingsService {
       const resourceBookingColor = project.settings?.resource_booking_color || DEFAULT_RESOURCE_BOOKING_COLOR;
 
       // Build pipelines for different booking types.
-      type PipelineConfig = { collectionName: string; collection: any; pipeline: any[] };
+      type PipelineConfig = { collectionName: string; collection: Collection; pipeline: any[] };
       const pipelines: PipelineConfig[] = [];
 
       // Shipment pipeline (if enabled)
