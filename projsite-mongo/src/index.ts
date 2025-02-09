@@ -8,7 +8,6 @@ import { clerkMiddleware } from '@hono/clerk-auth';
 import { db } from './middleware/db';
 import type { HonoEnv } from './types';
 import { openApiSpec } from './openapi';
-import mongoose from 'mongoose';
 
 // Initialize Hono App
 const app = new Hono<HonoEnv>();

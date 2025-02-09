@@ -1,6 +1,6 @@
 // src/services/BookingsService.ts
 import mongoose, { Types } from 'mongoose';
-import PipelineService from './PipelineService';
+import PipelineService from './pipeline-service';
 
 // Define the input and output types.
 interface GetBookingsParams {

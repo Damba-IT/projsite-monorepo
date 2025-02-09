@@ -1,6 +1,6 @@
 // src/routes/bookings.ts
 import { Hono } from 'hono';
-import { BookingsService } from '../services/BookingsService';
+import { BookingsService } from '../services/bookings-service';
 
 interface GetBookingsParams {
   project_id: string;
