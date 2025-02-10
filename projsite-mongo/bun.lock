@@ -36,7 +36,7 @@
 
     "@mongodb-js/saslprep": ["@mongodb-js/saslprep@1.2.0", "", { "dependencies": { "sparse-bitfield": "^3.0.3" } }, "sha512-+ywrb0AqkfaYuhHs6LxKWgqbh3I72EpEgESCw37o+9qPx9WTCkgDm2B+eMrwehGtHBWHFU4GXvnSCNiFhhausg=="],
 
-    "@projsite/types": ["@projsite/types@github:damba-it/projsite-types#2646581", { "peerDependencies": { "mongodb": "^6.0.0", "zod": "^3.0.0" } }, "Damba-IT-projsite-types-2646581"],
+    "@projsite/types": ["@projsite/types@github:damba-it/projsite-types#b4edc66", { "peerDependencies": { "mongodb": "^6.0.0", "zod": "^3.0.0" } }, "Damba-IT-projsite-types-b4edc66"],
 
     "@types/mongodb": ["@types/mongodb@4.0.7", "", { "dependencies": { "mongodb": "*" } }, "sha512-lPUYPpzA43baXqnd36cZ9xxorprybxXDzteVKCPAdp14ppHtFJHnXYvNpmBvtMUTb5fKXVv6sVbzo1LHkWhJlw=="],
 
