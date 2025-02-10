@@ -1,4 +1,5 @@
 import type { Context } from 'hono';
+import type { StatusCode } from 'hono/utils/http-status';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -9,19 +10,21 @@ type ApiResponse<T> = {
 }
 
 export const response = {
-  success: <T>(c: Context, data: T, status: number = 200, extras = {}) => {
-    return c.json({
+  success: <T>(c: Context, data: T, status: StatusCode = 200, extras = {}) => {
+    const response = new Response(JSON.stringify({
       success: true,
       data,
       ...extras
-    }, status);
+    }), { status });
+    return response;
   },
 
-  error: (c: Context, message: string, status: number = 400, extras = {}) => {
-    return c.json({
+  error: (c: Context, message: string, status: StatusCode = 400, extras = {}) => {
+    const response = new Response(JSON.stringify({
       success: false,
       error: message,
       ...extras
-    }, status);
+    }), { status });
+    return response;
   }
 }; 

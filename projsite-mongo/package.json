@@ -12,7 +12,7 @@
     "@types/mongodb": "^4.0.7",
     "bun-types": "latest",
     "typescript": "^5.7.3",
-    "@projsite/types": "github:damba-it/projsite-types#master",
+    "projsite-types": "^0.1.0",
     "@types/node": "^22.13.1"
   },
   "dependencies": {

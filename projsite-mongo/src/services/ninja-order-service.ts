@@ -2,8 +2,8 @@ import { Db, ObjectId, WithId } from 'mongodb';
 import { BaseService } from './base-service';
 import { Collections } from '../utils/collections';
 import { toObjectId } from '../utils/validation';
-import type { NinjaOrder } from '@projsite/types/types';
-import type { CreateNinjaOrder, UpdateNinjaOrder, NinjaOrderStatus } from '@projsite/types/schemas';
+import type { NinjaOrder } from 'projsite-types/types';
+import type { CreateNinjaOrder, UpdateNinjaOrder, NinjaOrderStatus } from 'projsite-types/schemas';
 
 export class NinjaOrderService extends BaseService<NinjaOrder> {
   constructor(db: Db) {
