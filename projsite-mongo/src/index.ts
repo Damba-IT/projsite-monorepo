@@ -8,8 +8,12 @@ import { clerkMiddleware } from '@hono/clerk-auth';
 import { db } from './middleware/db';
 import type { HonoEnv } from './types';
 import { openApiSpec } from './openapi';
+import bookingsRouter from './routes/booking';
+import organizationsRouter from './routes/organizations';
+import projectsRouter from './routes/projects';
+import ninjaRouter from './routes/ninja';
+import { env } from 'hono/adapter';
 
-// Initialize Hono App
 const app = new Hono<HonoEnv>();
 
 // Middleware
@@ -20,8 +24,8 @@ app.use('*', db);
 
 // Auth middleware
 app.use('*', async (c, next) => {
-  const publishableKey = c.env.CLERK_PUBLISHABLE_KEY || '';
-  const secretKey = c.env.CLERK_SECRET_KEY || '';
+  const publishableKey = env(c).CLERK_PUBLISHABLE_KEY || '';
+  const secretKey = env(c).CLERK_SECRET_KEY || '';
   return clerkMiddleware({ publishableKey, secretKey })(c, next);
 });
 
@@ -32,11 +36,6 @@ app.onError((err, c) => {
 });
 
 // Routes
-import bookingsRouter from './routes/booking';
-import organizationsRouter from './routes/organizations';
-import projectsRouter from './routes/projects';
-import ninjaRouter from './routes/ninja';
-
 app.route('/api/v1/organizations', organizationsRouter);
 app.route('/api/v1/projects', projectsRouter);
 app.route('/api/v1/ninja', ninjaRouter);
