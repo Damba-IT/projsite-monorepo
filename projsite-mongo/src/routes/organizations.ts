@@ -7,7 +7,6 @@ import {
   searchOrganizationSchema
 } from '../schemas/organizations';
 import { OrganizationService } from '../services/organization-service';
-import { response } from '../utils/response';
 import { idParamSchema } from '../utils/validation';
 
 const app = new Hono<HonoEnv>();
@@ -17,7 +16,7 @@ app
     const db = c.get('db');
     const service = new OrganizationService(db);
     const result = await service.findAll();
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   })
   .get('/search', zValidator('query', searchOrganizationSchema), async (c) => {
     const db = c.get('db');
@@ -26,9 +25,9 @@ app
 
     try {
       const results = await service.searchCompanies(query);
-      return response.success(c, results);
+      return c.json({ success: true, data: results });
     } catch (error: any) {
-      return response.error(c, error.message, 500);
+      return c.json({ success: false, error: error.message }, 500);
     }
   })
   .post('/', zValidator('json', createOrganizationSchema), async (c) => {
@@ -37,9 +36,9 @@ app
     const data = c.req.valid('json');
     const result = await service.create(data);
     if (!result) {
-      return response.error(c, 'Failed to create organization', 400);
+      return c.json({ success: false, error: 'Failed to create organization' }, 400);
     }
-    return response.success(c, result, 201);
+    return c.json({ success: true, data: result }, 201);
   })
   .get('/:id', zValidator('param', idParamSchema), async (c) => {
     const db = c.get('db');
@@ -47,9 +46,9 @@ app
     const id = c.req.valid('param').id;
     const result = await service.findById(id);
     if (!result) {
-      return response.error(c, 'Organization not found', 404);
+      return c.json({ success: false, error: 'Organization not found' }, 404);
     }
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   })
   .put('/:id', zValidator('param', idParamSchema), zValidator('json', updateOrganizationSchema), async (c) => {
     const db = c.get('db');
@@ -58,9 +57,9 @@ app
     const data = c.req.valid('json');
     const result = await service.update(id, data);
     if (!result) {
-      return response.error(c, 'Organization not found', 404);
+      return c.json({ success: false, error: 'Organization not found' }, 404);
     }
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   })
   .delete('/:id', zValidator('param', idParamSchema), async (c) => {
     const db = c.get('db');
@@ -68,9 +67,9 @@ app
     const id = c.req.valid('param').id;
     const result = await service.softDelete(id);
     if (!result) {
-      return response.error(c, 'Organization not found', 404);
+      return c.json({ success: false, error: 'Organization not found' }, 404);
     }
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   })
   .get('/:id/projects', zValidator('param', idParamSchema), async (c) => {
     const db = c.get('db');
@@ -79,11 +78,11 @@ app
 
     const organization = await service.findById(id);
     if (!organization) {
-      return response.error(c, 'Organization not found', 404);
+      return c.json({ success: false, error: 'Organization not found' }, 404);
     }
 
     const projects = await service.getProjects(id);
-    return response.success(c, projects);
+    return c.json({ success: true, data: projects });
   });
 
 export default app; 

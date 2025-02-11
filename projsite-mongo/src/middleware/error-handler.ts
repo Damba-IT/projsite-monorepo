@@ -1,41 +1,41 @@
-import { MiddlewareHandler } from "hono";
-import { HTTPException } from "hono/http-exception";
-import { ZodError } from "zod";
-import type { HonoEnv } from "../types";
-import { response } from '../utils/response';
+import { Context } from 'hono';
+import { ZodError } from 'zod';
+import { HTTPException } from 'hono/http-exception';
+import type { HonoEnv } from '../types';
 
-export const errorHandler: MiddlewareHandler<HonoEnv> = async (c, next) => {
-  try {
-    await next();
-  } catch (error) {
-    if (error instanceof ZodError) {
-      // Format Zod validation errors
-      const formattedErrors = error.errors.map(err => ({
-        path: err.path.join('.'),
-        message: err.message
-      }));
-      
-      return response.error(c, "Validation failed", 400, {
-        validation_errors: formattedErrors
-      });
-    }
-
-    if (error instanceof HTTPException) {
-      // Use getResponse if a custom response was provided
-      const res = error.getResponse();
-      if (res) {
-        return res;
-      }
-
-      // Include the cause if available
-      const errorDetails = error.cause ? {
-        cause: error.cause instanceof Error ? error.cause.message : error.cause
-      } : {};
-
-      return response.error(c, error.message, error.status, errorDetails);
-    }
-
-    console.error(error);
-    return response.error(c, "Internal Server Error", 500);
+export const handleError = (err: Error, c: Context<HonoEnv>) => {
+  console.log('Error caught in onError:', err);
+  
+  if (err instanceof ZodError) {
+    const formattedErrors = err.errors.map(err => ({
+      path: err.path.join('.'),
+      message: err.message
+    }));
+    
+    return c.json({
+      success: false,
+      error: "Validation failed",
+      validation_errors: formattedErrors
+    }, 400);
   }
+
+  if (err instanceof HTTPException) {
+    // Get the custom response if available
+    const res = err.getResponse();
+    if (res) return res;
+
+    return c.json({
+      success: false,
+      error: err.message,
+      cause: err.cause instanceof Error ? err.cause.message : err.cause
+    }, err.status);
+  }
+
+  // Generic error handler
+  const errorMessage = err instanceof Error ? err.message : 'Internal Server Error';
+  return c.json({
+      success: false,
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? err : undefined
+  }, 500);
 }; 

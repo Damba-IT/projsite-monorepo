@@ -6,7 +6,7 @@ import { customPrintFunc } from './utils/logger';
 import { swaggerUI } from '@hono/swagger-ui';
 import { clerkMiddleware } from '@hono/clerk-auth';
 import { db } from './middleware/db';
-import { errorHandler } from './middleware/error-handler';
+import { handleError } from './middleware/error-handler';
 import type { HonoEnv } from './types';
 import { openApiSpec } from './openapi';
 
@@ -14,9 +14,6 @@ const app = new Hono<HonoEnv>();
 
 // Logger middleware should be first to catch all requests
 app.use('*', logger(customPrintFunc));
-
-// Error handler should be next to catch all errors
-app.use('*', errorHandler);
 
 // Other middleware
 app.use('*', cors());
@@ -39,6 +36,8 @@ import ninjaRouter from './routes/ninja';
 app.route('/api/v1/organizations', organizationsRouter);
 app.route('/api/v1/projects', projectsRouter);
 app.route('/api/v1/ninja', ninjaRouter);
+
+app.onError(handleError);
 
 // Swagger UI
 app.get('/api/docs', swaggerUI({ url: '/api/swagger.json' }));

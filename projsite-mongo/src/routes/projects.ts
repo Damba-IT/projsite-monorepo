@@ -8,7 +8,6 @@ import {
   type UpdateProjectInput
 } from '../schemas/projects';
 import { ProjectService } from "../services/project-service";
-import { response } from '../utils/response';
 import { idParamSchema } from '../utils/validation';
 
 const app = new Hono<HonoEnv>();
@@ -18,7 +17,7 @@ app
     const db = c.get('db');
     const service = new ProjectService(db);
     const result = await service.findAll();
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   })
   .post("/", zValidator('json', createProjectSchema), async (c) => {
     const db = c.get('db');
@@ -26,9 +25,9 @@ app
     const data = c.req.valid('json');
     const result = await service.create(data);
     if (!result) {
-      return response.error(c, "Failed to create project", 400);
+      return c.json({ success: false, error: "Failed to create project" }, 400);
     }
-    return response.success(c, result, 201);
+    return c.json({ success: true, data: result }, 201);
   })
   .get("/:id", zValidator('param', idParamSchema), async (c) => {
     const db = c.get('db');
@@ -36,9 +35,9 @@ app
     const id = c.req.valid('param').id;
     const result = await service.findById(id);
     if (!result) {
-      return response.error(c, "Project not found", 404);
+      return c.json({ success: false, error: "Project not found" }, 404);
     }
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   })
   .put("/:id", zValidator('param', idParamSchema), zValidator('json', updateProjectSchema), async (c) => {
     const db = c.get('db');
@@ -47,9 +46,9 @@ app
     const data = c.req.valid('json');
     const result = await service.update(id, data);
     if (!result) {
-      return response.error(c, "Project not found", 404);
+      return c.json({ success: false, error: "Project not found" }, 404);
     }
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   })
   .delete("/:id", zValidator('param', idParamSchema), async (c) => {
     const db = c.get('db');
@@ -57,9 +56,9 @@ app
     const id = c.req.valid('param').id;
     const result = await service.softDelete(id);
     if (!result) {
-      return response.error(c, "Project not found", 404);
+      return c.json({ success: false, error: "Project not found" }, 404);
     }
-    return response.success(c, result);
+    return c.json({ success: true, data: result });
   });
 
 export default app; 
