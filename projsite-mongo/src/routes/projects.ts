@@ -9,6 +9,8 @@ import {
 } from '../schemas/projects';
 import { ProjectService } from "../services/project-service";
 import { idParamSchema } from '../utils/validation';
+import { validationErrorHandler } from '../middleware/error-handler';
+import { HTTPException } from 'hono/http-exception';
 
 const app = new Hono<HonoEnv>();
 
@@ -19,46 +21,59 @@ app
     const result = await service.findAll();
     return c.json({ success: true, data: result });
   })
-  .post("/", zValidator('json', createProjectSchema), async (c) => {
-    const db = c.get('db');
-    const service = new ProjectService(db);
-    const data = c.req.valid('json');
-    const result = await service.create(data);
-    if (!result) {
-      return c.json({ success: false, error: "Failed to create project" }, 400);
+  .post("/", 
+    zValidator('json', createProjectSchema, validationErrorHandler), 
+    async (c) => {
+      const db = c.get('db');
+      const service = new ProjectService(db);
+      const data = c.req.valid('json');
+      const result = await service.create(data);
+      if (!result) {
+        throw new HTTPException(400, { message: "Failed to create project" });
+      }
+      return c.json({ success: true, data: result }, 201);
     }
-    return c.json({ success: true, data: result }, 201);
-  })
-  .get("/:id", zValidator('param', idParamSchema), async (c) => {
-    const db = c.get('db');
-    const service = new ProjectService(db);
-    const id = c.req.valid('param').id;
-    const result = await service.findById(id);
-    if (!result) {
-      return c.json({ success: false, error: "Project not found" }, 404);
+  )
+  .get("/:id", 
+    zValidator('param', idParamSchema, validationErrorHandler), 
+    async (c) => {
+      const db = c.get('db');
+      const service = new ProjectService(db);
+      const id = c.req.valid('param').id;
+      const result = await service.findById(id);
+      if (!result) {
+        throw new HTTPException(404, { message: "Project not found" });
+      }
+      return c.json({ success: true, data: result });
     }
-    return c.json({ success: true, data: result });
-  })
-  .put("/:id", zValidator('param', idParamSchema), zValidator('json', updateProjectSchema), async (c) => {
-    const db = c.get('db');
-    const service = new ProjectService(db);
-    const id = c.req.valid('param').id;
-    const data = c.req.valid('json');
-    const result = await service.update(id, data);
-    if (!result) {
-      return c.json({ success: false, error: "Project not found" }, 404);
+  )
+  .put("/:id", 
+    zValidator('param', idParamSchema, validationErrorHandler),
+    zValidator('json', updateProjectSchema, validationErrorHandler), 
+    async (c) => {
+      const db = c.get('db');
+      const service = new ProjectService(db);
+      const id = c.req.valid('param').id;
+      const data = c.req.valid('json');
+      const result = await service.update(id, data);
+      if (!result) {
+        throw new HTTPException(404, { message: "Project not found" });
+      }
+      return c.json({ success: true, data: result });
     }
-    return c.json({ success: true, data: result });
-  })
-  .delete("/:id", zValidator('param', idParamSchema), async (c) => {
-    const db = c.get('db');
-    const service = new ProjectService(db);
-    const id = c.req.valid('param').id;
-    const result = await service.softDelete(id);
-    if (!result) {
-      return c.json({ success: false, error: "Project not found" }, 404);
+  )
+  .delete("/:id", 
+    zValidator('param', idParamSchema, validationErrorHandler), 
+    async (c) => {
+      const db = c.get('db');
+      const service = new ProjectService(db);
+      const id = c.req.valid('param').id;
+      const result = await service.softDelete(id);
+      if (!result) {
+        throw new HTTPException(404, { message: "Project not found" });
+      }
+      return c.json({ success: true, data: result });
     }
-    return c.json({ success: true, data: result });
-  });
+  );
 
 export default app; 
