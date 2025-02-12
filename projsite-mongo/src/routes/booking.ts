@@ -1,24 +1,13 @@
-// src/routes/bookings.ts
 import { Hono } from 'hono';
 import { BookingsService } from '../services/bookings-service';
 import type { HonoEnv } from '../types';
+import { GetBookingsParams } from '../types/booking';
 
-interface GetBookingsParams {
-  project_id: string;
-  startDate: string;
-  endDate: string;
-  zones?: string[];
-  subProjects?: string[];
-  contractors?: string[];
-  resources?: string[];
-  requestStatus?: string;
-  isConfirmed?: boolean;
-}
+
 
 const bookingsRouter = new Hono<HonoEnv>();
 
-// GET /api/bookings?project_id=...&startDate=...&endDate=...&...
-bookingsRouter.get('/', async (c) => {
+async function fetchBookings(c: any, bookingType?: string) {
   try {
     const db = c.get('db');
 
@@ -48,7 +37,25 @@ bookingsRouter.get('/', async (c) => {
       isConfirmed
     };
 
-    const result = await BookingsService.getBookings(db, params);
+    const result = await BookingsService.getBookings(db, params, bookingType);
+    return c.json(result, result.success ? 200 : 400);
+  } catch (error: any) {
+    return c.json({ success: false, error: error.message }, 500);
+  }
+}
+
+bookingsRouter.get('/', (c) => fetchBookings(c));
+
+bookingsRouter.get('/shipment', (c) => fetchBookings(c, 'shipment'));
+bookingsRouter.get('/waste', (c) => fetchBookings(c, 'waste'));
+bookingsRouter.get('/resource', (c) => fetchBookings(c, 'resource'));
+
+bookingsRouter.get('/:bookingType/:id', async (c) => {
+  try {
+    const db = c.get('db');
+    const { bookingType, id } = c.req.param();
+
+    const result = await BookingsService.getBookingById(db, bookingType, id);
     return c.json(result, result.success ? 200 : 400);
   } catch (error: any) {
     return c.json({ success: false, error: error.message }, 500);
