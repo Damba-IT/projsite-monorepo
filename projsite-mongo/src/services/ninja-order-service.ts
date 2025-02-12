@@ -22,10 +22,64 @@ export class NinjaOrderService extends BaseService<NinjaOrder> {
   }
 
   async findByCompany(companyId: string) {
-    return await super.findAll({ 
-      company_id: companyId,
-      status: { $ne: 'deleted' as NinjaOrderStatus } 
-    });
+    const pipeline = [
+      {
+        $match: {
+          company_id: companyId,
+          status: { $ne: 'deleted' as NinjaOrderStatus }
+        }
+      },
+      {
+        $lookup: {
+          from: Collections.USERS,
+          let: { userId: '$created_by_user' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$clerk_user_id', '$$userId'] }
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                full_name: {
+                  $concat: [
+                    { $ifNull: ['$first_name', ''] },
+                    { $cond: [
+                      { $and: [
+                        { $ifNull: ['$first_name', false] },
+                        { $ifNull: ['$last_name', false] }
+                      ]},
+                      ' ',
+                      ''
+                    ]},
+                    { $ifNull: ['$last_name', ''] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'creator'
+        }
+      },
+      {
+        $addFields: {
+          created_by_name: {
+            $ifNull: [
+              { $arrayElemAt: ['$creator.full_name', 0] },
+              'Unknown User'
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          creator: 0
+        }
+      }
+    ];
+
+    return await this.collection.aggregate(pipeline).toArray();
   }
 
   async create(data: CreateNinjaOrder) {
