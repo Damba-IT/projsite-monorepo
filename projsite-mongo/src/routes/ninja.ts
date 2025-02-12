@@ -19,6 +19,19 @@ app
     const result = await service.findAll();
     return c.json({ success: true, data: result });
   })
+  .get("/orders/company/:id", 
+    zValidator('param', idParamSchema, validationErrorHandler),
+    async (c) => {
+      const db = c.get('db');
+      const service = new NinjaOrderService(db);
+      const companyId = c.req.valid('param').id;
+      const result = await service.findByCompany(companyId);
+      if (!result) {
+        throw new HTTPException(404, { message: "No orders found for this company" });
+      }
+      return c.json({ success: true, data: result });
+    }
+  )
   .post("/orders", 
     zValidator('json', createNinjaOrderSchema, validationErrorHandler),
     async (c) => {

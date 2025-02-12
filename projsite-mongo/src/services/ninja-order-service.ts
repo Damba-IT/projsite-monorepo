@@ -21,6 +21,13 @@ export class NinjaOrderService extends BaseService<NinjaOrder> {
     });
   }
 
+  async findByCompany(companyId: string) {
+    return await super.findAll({ 
+      company_id: companyId,
+      status: { $ne: 'deleted' as NinjaOrderStatus } 
+    });
+  }
+
   async create(data: CreateNinjaOrder) {
     const newNinjaOrder: Omit<NinjaOrder, '_id'> = {
         service_type: data.service_type,
