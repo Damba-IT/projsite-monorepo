@@ -7,6 +7,7 @@ import { swaggerUI } from '@hono/swagger-ui';
 import { clerkMiddleware } from '@hono/clerk-auth';
 import { db } from './middleware/db';
 import { handleError } from './middleware/error-handler';
+import { auth } from './middleware/auth';
 import type { HonoEnv } from './types';
 import { openApiSpec } from './openapi';
 
@@ -20,10 +21,7 @@ app.use('*', cors());
 app.use('*', prettyJSON());
 
 // Auth middleware
-app.use('*', clerkMiddleware({
-  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || '',
-  secretKey: process.env.CLERK_SECRET_KEY || '',
-}));
+app.use('*', clerkMiddleware());
 
 // Database middleware
 app.use('*', db);
@@ -32,6 +30,11 @@ app.use('*', db);
 import organizationsRouter from './routes/organizations';
 import projectsRouter from './routes/projects';
 import ninjaRouter from './routes/ninja';
+
+// Protected routes - require authentication
+app.use('/api/v1/organizations/*', auth);
+app.use('/api/v1/projects/*', auth);
+app.use('/api/v1/ninja/*', auth);
 
 app.route('/api/v1/organizations', organizationsRouter);
 app.route('/api/v1/projects', projectsRouter);
