@@ -10,7 +10,7 @@
     "@cloudflare/workers-types": "^4.20231218.0",
     "@projsite/types": "github:damba-it/projsite-types#master",
     "@types/mongodb": "^4.0.7",
-    "typescript": "^5.3.3",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@clerk/backend": "^1.21.4",
