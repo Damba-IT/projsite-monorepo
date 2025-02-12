@@ -1,12 +1,12 @@
 import { Db, ObjectId } from 'mongodb';
 import { BaseService } from './base-service';
 import { Collections } from '../utils/collections';
-import type { Organization } from '../types';
-import type { CreateOrganizationInput, UpdateOrganizationInput } from '../schemas/organizations';
+import type { Company } from '../types';
+import type { CreateCompanyInput, UpdateCompanyInput } from '../schemas/companies';
 
-export class OrganizationService extends BaseService<Organization> {
+export class CompanyService extends BaseService<Company> {
   constructor(db: Db) {
-    super(db, Collections.ORGANIZATIONS);
+    super(db, Collections.COMPANIES);
   }
 
   async findAll() {
@@ -19,18 +19,18 @@ export class OrganizationService extends BaseService<Organization> {
     });
   }
 
-  async create(data: CreateOrganizationInput) {
-    const newOrg = {
+  async create(data: CreateCompanyInput) {
+    const newCompany = {
       ...data,
       is_deleted: false,
       created_at: new Date(),
       updated_at: new Date()
     };
 
-    return await super.create(newOrg);
+    return await super.create(newCompany);
   }
 
-  async update(id: string | ObjectId, data: UpdateOrganizationInput) {
+  async update(id: string | ObjectId, data: UpdateCompanyInput) {
     const updateData = {
       ...data,
       updated_at: new Date()
@@ -49,7 +49,7 @@ export class OrganizationService extends BaseService<Organization> {
   async getProjects(id: string | ObjectId) {
     const projects = await this.db.collection(Collections.PROJECTS)
       .find({ 
-        organization_id: typeof id === 'string' ? new ObjectId(id) : id,
+        company_id: typeof id === 'string' ? new ObjectId(id) : id,
         status: { $ne: 'deleted' }
       })
       .toArray();

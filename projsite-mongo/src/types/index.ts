@@ -14,7 +14,7 @@ export interface HonoEnv {
   };
 }
 
-export interface OrganizationSettings {
+export interface CompanySettings {
   warehouse_module: boolean;
 }
 
@@ -55,13 +55,13 @@ export interface FormValidationRules {
   };
 }
 
-export interface Organization {
+export interface Company {
   _id?: ObjectId;
   name: string;
   active: boolean;
   is_deleted: boolean;
   logo?: string;
-  settings: OrganizationSettings;
+  settings: CompanySettings;
   created_by_user?: string;
   created_by_service?: string;
   created_at: Date;
@@ -72,7 +72,7 @@ export interface Project {
   _id?: ObjectId;
   project_id: string;
   name: string;
-  organization_id: ObjectId;
+  company_id: ObjectId;
   start_date: Date;
   end_date: Date;
   status: ProjectStatus;
@@ -97,7 +97,7 @@ export interface User {
   phone_number?: string;
   old_phone_number?: string;
   password?: string;
-  organization_id?: ObjectId;
+  company_id?: ObjectId;
   super_admin: boolean;
   image?: string;
 } 

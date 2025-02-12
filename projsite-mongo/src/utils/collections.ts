@@ -1,6 +1,6 @@
 // Collections
 export const Collections = {
-  ORGANIZATIONS: 'company',
+  COMPANIES: 'company',
   PROJECTS: 'projects',
   USERS: 'users',
   NINJA_ORDERS: 'ninja_orders',

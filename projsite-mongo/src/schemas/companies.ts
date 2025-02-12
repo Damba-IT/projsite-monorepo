@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { ObjectId } from 'mongodb';
-import type { Organization } from '../types';
+import type { Company } from '../types';
 
 // Base schema with common fields
-const baseOrganizationSchema = z.object({
+const baseCompanySchema = z.object({
   name: z.string().min(1),
   settings: z.object({
     warehouse_module: z.boolean()
@@ -11,7 +11,7 @@ const baseOrganizationSchema = z.object({
 });
 
 // Create schema
-export const createOrganizationSchema = baseOrganizationSchema.extend({
+export const createCompanySchema = baseCompanySchema.extend({
   active: z.boolean().optional().default(true),
   logo: z.string().optional(),
   created_by_user: z.string().optional(),
@@ -19,7 +19,7 @@ export const createOrganizationSchema = baseOrganizationSchema.extend({
 });
 
 // Update schema
-export const updateOrganizationSchema = baseOrganizationSchema
+export const updateCompanySchema = baseCompanySchema
   .partial()
   .extend({
     active: z.boolean().optional(),
@@ -27,7 +27,7 @@ export const updateOrganizationSchema = baseOrganizationSchema
   });
 
 // Response schema
-export const organizationResponseSchema = baseOrganizationSchema.extend({
+export const companyResponseSchema = baseCompanySchema.extend({
   _id: z.instanceof(ObjectId),
   active: z.boolean(),
   is_deleted: z.boolean(),
@@ -39,13 +39,13 @@ export const organizationResponseSchema = baseOrganizationSchema.extend({
 });
 
 // Search query schema
-export const searchOrganizationSchema = z.object({
+export const searchCompanySchema = z.object({
   query: z.string().min(1).max(100)
 });
 
-export type SearchOrganizationQuery = z.infer<typeof searchOrganizationSchema>;
+export type SearchCompanyQuery = z.infer<typeof searchCompanySchema>;
 
 // Type inference
-export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>;
-export type UpdateOrganizationInput = z.infer<typeof updateOrganizationSchema>;
-export type OrganizationResponse = z.infer<typeof organizationResponseSchema>; 
+export type CreateCompanyInput = z.infer<typeof createCompanySchema>;
+export type UpdateCompanyInput = z.infer<typeof updateCompanySchema>;
+export type CompanyResponse = z.infer<typeof companyResponseSchema>; 
