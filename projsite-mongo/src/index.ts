@@ -6,6 +6,7 @@ import { customPrintFunc } from './utils/logger';
 import { swaggerUI } from '@hono/swagger-ui';
 import { clerkMiddleware } from '@hono/clerk-auth';
 import { db } from './middleware/db';
+import { handleError } from './middleware/error-handler';
 import type { HonoEnv } from './types';
 import { openApiSpec } from './openapi';
 import bookingsRouter from './routes/booking';
@@ -16,7 +17,10 @@ import { env } from 'hono/adapter';
 
 const app = new Hono<HonoEnv>();
 
-// Middleware
+// Logger middleware should be first to catch all requests
+app.use('*', logger(customPrintFunc));
+
+// Other middleware
 app.use('*', cors());
 app.use('*', prettyJSON());
 app.use('*', logger(customPrintFunc));
@@ -29,20 +33,18 @@ app.use('*', async (c, next) => {
   return clerkMiddleware({ publishableKey, secretKey })(c, next);
 });
 
-// Error Handling
-app.onError((err, c) => {
-  console.error(`[${c.req.method}] ${c.req.url}:`, err);
-  return c.json({ success: false, error: 'Internal Server Error' }, 500);
-});
-
 // Routes
 app.route('/api/v1/organizations', organizationsRouter);
 app.route('/api/v1/projects', projectsRouter);
 app.route('/api/v1/ninja', ninjaRouter);
+
+app.onError(handleError);
 app.route('/api/v1/bookings', bookingsRouter);
 
 // Swagger UI
-app.get('/api/docs', swaggerUI({ url: '/swagger.json' }));
+app.get('/api/docs', swaggerUI({ url: '/api/swagger.json' }));
+
+// Serve OpenAPI spec
 app.get('/api/swagger.json', (c) => c.json(openApiSpec));
 
 // Health Check

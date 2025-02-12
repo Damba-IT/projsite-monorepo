@@ -4,19 +4,19 @@ This is the MongoDB version of the Projsite API, built with:
 - Hono framework
 - MongoDB
 - TypeScript
-- Cloudflare Workers
+- Bun Runtime
 - Clerk Authentication
 
 ## Setup
 
 1. Install dependencies:
 ```bash
-npm install
+bun install
 ```
 
 2. Set up environment variables:
-- Copy `.dev.vars.example` to `.dev.vars`
-- Update the values in `.dev.vars` with your configuration:
+- Copy `.env.example` to `.env`
+- Update the values in `.env` with your configuration:
   - `MONGODB_URI`: Your MongoDB connection string
   - `CLERK_SECRET_KEY`: Your Clerk secret key
   - `SERVICE_API_KEY`: Your service API key
@@ -29,21 +29,25 @@ docker run -d -p 27017:27017 --name mongodb mongo:latest
 
 4. Run the development server:
 ```bash
-npm run dev
+bun run dev
 ```
 
 ## Deployment
 
-1. Set up your Cloudflare Worker secrets:
+1. Set up your environment variables on your server:
 ```bash
-wrangler secret put MONGODB_URI
-wrangler secret put CLERK_SECRET_KEY
-wrangler secret put SERVICE_API_KEY
+export MONGODB_URI="your-mongodb-uri"
+export CLERK_SECRET_KEY="your-clerk-secret-key"
+export SERVICE_API_KEY="your-service-api-key"
 ```
 
-2. Deploy to Cloudflare Workers:
+2. Build and run the application:
 ```bash
-npm run deploy
+# Build the application
+bun run build
+
+# Start the server
+bun run start
 ```
 
 ## API Documentation
