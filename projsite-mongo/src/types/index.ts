@@ -119,3 +119,21 @@ export interface ServiceResponse<T = any> {
   data?: T;
   error?: string;
 }
+
+// Clerk Webhook Event Types
+export interface ClerkWebhookEvent {
+  type: string;
+  data: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email_addresses: Array<{ email_address: string }>;
+    phone_numbers?: Array<{ phone_number: string }>;
+    profile_image_url: string;
+    public_metadata?: {
+      superAdmin?: boolean;
+      [key: string]: any;
+    };
+    [key: string]: any;
+  };
+}

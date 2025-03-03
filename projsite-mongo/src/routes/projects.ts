@@ -11,6 +11,7 @@ import { ProjectService } from "../services/project-service";
 import { idParamSchema } from '../utils/validation';
 import { validationErrorHandler } from '../middleware/error-handler';
 import { HTTPException } from 'hono/http-exception';
+import bookingsRouter from './booking';
 
 const app = new Hono<HonoEnv>();
 
@@ -74,6 +75,7 @@ app
       }
       return c.json({ success: true, data: result });
     }
-  );
+  )
+  .route('/:projectId/bookings', bookingsRouter);
 
 export default app; 
