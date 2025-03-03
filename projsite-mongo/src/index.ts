@@ -14,6 +14,9 @@ import organizationsRouter from './routes/organizations';
 import projectsRouter from './routes/projects';
 import ninjaRouter from './routes/ninja';
 import webhookRouter from './routes/webhooks';
+import resourceRouter from './routes/resources';
+import subProjectRouter from './routes/sub-projects';
+import zoneRouter from './routes/zones';
 import { env } from 'hono/adapter';
 
 const app = new Hono<HonoEnv>();
@@ -39,6 +42,9 @@ app.route('/api/v1/organizations', organizationsRouter);
 app.route('/api/v1/projects', projectsRouter);
 app.route('/api/v1/ninja', ninjaRouter);
 app.route('/api/v1/webhooks', webhookRouter);
+app.route('/api/v1/resources', resourceRouter);
+app.route('/api/v1/sub-projects', subProjectRouter);
+app.route('/api/v1/zones', zoneRouter);
 
 app.onError(handleError);
 

@@ -120,6 +120,37 @@ export interface ServiceResponse<T = any> {
   error?: string;
 }
 
+// Resource, SubProject, and Zone interfaces
+export interface Resource {
+  _id?: ObjectId;
+  resource_name: string;
+  project_id: string;
+  resource_pattern: string;
+  assigned_users: string[];
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface SubProject {
+  _id?: ObjectId;
+  sub_project_name: string;
+  project_id: string;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Zone {
+  _id?: ObjectId;
+  unloading_zone_name: string;
+  project_id: string;
+  zone_color: string;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
 // Clerk Webhook Event Types
 export interface ClerkWebhookEvent {
   type: string;
