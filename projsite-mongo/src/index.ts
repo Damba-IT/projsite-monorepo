@@ -30,6 +30,7 @@ app.use('*', db);
 import companiesRouter from './routes/companies';
 import projectsRouter from './routes/projects';
 import ninjaRouter from './routes/ninja';
+import webhookRouter from './routes/webhooks';
 
 // Protected routes - require authentication
 app.use('/api/v1/companies/*', auth);
@@ -39,6 +40,7 @@ app.use('/api/v1/ninja/*', auth);
 app.route('/api/v1/companies', companiesRouter);
 app.route('/api/v1/projects', projectsRouter);
 app.route('/api/v1/ninja', ninjaRouter);
+app.route('/api/v1/webhooks', webhookRouter);
 
 app.onError(handleError);
 
