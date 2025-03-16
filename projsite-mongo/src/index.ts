@@ -10,6 +10,7 @@ import { handleError } from './middleware/error-handler';
 import { auth } from './middleware/auth';
 import type { HonoEnv } from './types';
 import { openApiSpec } from './openapi';
+import bookingsRouter from './routes/booking';
 
 const app = new Hono<HonoEnv>();
 
