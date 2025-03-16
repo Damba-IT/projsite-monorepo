@@ -100,4 +100,14 @@ export interface User {
   company_id?: ObjectId;
   super_admin: boolean;
   image?: string;
-} 
+}
+
+export interface Zone {
+  _id?: ObjectId;
+  unloading_zone_name: string;
+  project_id: string;
+  zone_color: string;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
