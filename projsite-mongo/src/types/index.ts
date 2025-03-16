@@ -100,4 +100,15 @@ export interface User {
   company_id?: ObjectId;
   super_admin: boolean;
   image?: string;
-} 
+}
+
+export interface Resource {
+  _id?: ObjectId;
+  resource_name: string;
+  project_id: string;
+  resource_pattern: string;
+  assigned_users: string[];
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
