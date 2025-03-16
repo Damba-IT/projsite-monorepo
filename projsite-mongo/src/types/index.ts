@@ -101,3 +101,12 @@ export interface User {
   super_admin: boolean;
   image?: string;
 } 
+
+export interface SubProject {
+  _id?: ObjectId;
+  sub_project_name: string;
+  project_id: string;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
