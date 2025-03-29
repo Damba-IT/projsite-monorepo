@@ -1,0 +1,37 @@
+{
+  "name": "@projsite/api-postgres",
+  "version": "1.0.0",
+  "description": "Projsites backend API built with Hono framework, Drizzle ORM, neon postgres database and deployed on Cloudflare Workers.",
+  "scripts": {
+    "dev": "bunx wrangler dev src/index.ts",
+    "deploy": "bunx wrangler deploy --minify src/index.ts",
+    "db:generate": "bunx drizzle-kit generate:pg",
+    "db:migrate": "bun run migrate.ts",
+    "build": "echo 'No build step for Cloudflare Workers'",
+    "clean": "rm -rf node_modules",
+    "lint": "echo 'Add linting command here'",
+    "test": "echo 'Add testing command here'"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.0",
+    "postgres": "^3.4.3",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.22.4"
+  },
+  "dependencies": {
+    "@clerk/backend": "^1.21.4",
+    "@hono/clerk-auth": "^2.0.0",
+    "@hono/swagger-ui": "^0.5.0",
+    "@hono/zod-validator": "^0.4.1",
+    "@neondatabase/serverless": "^0.10.4",
+    "@projsite/types": "*",
+    "@projsite/auth": "*",
+    "drizzle-orm": "^0.38.0",
+    "hono": "^3.12.2",
+    "zod": "^3.23.8"
+  },
+  "module": "src/index.ts",
+  "type": "module"
+}

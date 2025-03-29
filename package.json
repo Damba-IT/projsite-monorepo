@@ -1,15 +1,27 @@
 {
-  "name": "projsite-api",
+  "name": "projsite-monorepo",
   "version": "1.0.0",
-  "description": "Projsite API with both PostgreSQL and MongoDB implementations",
+  "description": "Projsite monorepo containing API, web, mobile, and shared libraries",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev:pg": "cd projsite-postgres && bun run dev",
-    "dev:mongo": "cd projsite-mongo && bun run dev",
-    "deploy:pg": "cd projsite-postgres && bun run deploy",
-    "deploy:mongo": "cd projsite-mongo && bun run deploy"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "devDependencies": {
+    "turbo": "^2.1.0",
+    "prettier": "^3.2.5"
+  },
+  "packageManager": "bun@1.0.30",
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  }
 } 

@@ -1,0 +1,28 @@
+{
+  "name": "@projsite/auth",
+  "version": "0.1.0",
+  "description": "Shared authentication utilities for Projsite applications",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --dts",
+    "dev": "tsup src/index.ts --dts --watch",
+    "clean": "rm -rf dist node_modules",
+    "lint": "echo 'Add linting command here'",
+    "test": "echo 'Add testing command here'"
+  },
+  "dependencies": {
+    "@clerk/backend": "^1.23.11",
+    "@projsite/types": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.3"
+  }
+} 

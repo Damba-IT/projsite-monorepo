@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Bun: Launch Program",
+      "type": "bun",
+      "request": "launch",
+      "program": "${workspaceFolder}/projsite-mongo/src/index.ts",
+      "cwd": "${workspaceFolder}/projsite-mongo",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "name": "Bun: Attach to Process",
+      "type": "bun",
+      "request": "attach",
+      "port": 6499
+    }
+  ]
+} 

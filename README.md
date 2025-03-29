@@ -1,105 +1,92 @@
-# Projsite API
+# Projsite Monorepo
 
-This repository contains two implementations of the Projsite API:
-1. PostgreSQL version (using Drizzle ORM)
-2. MongoDB version (using Mongoose)
+This monorepo contains all the code for the Projsite platform, including APIs, frontend applications, and shared libraries.
 
-Both implementations share the same API interface and functionality but use different databases.
+## Structure
 
-## Prerequisites
-
-- [Bun](https://bun.sh) installed on your system
-- Node.js 18+ (for some development tools)
-- Docker (optional, for running databases locally)
-
-## Project Structure
+The monorepo is structured as follows:
 
 ```
-projsite-api/
-├── projsite-postgres/    # PostgreSQL implementation
-│   ├── src/             # Source code
-│   ├── drizzle/         # Database migrations
-│   └── ...
-│
-├── projsite-mongo/      # MongoDB implementation
-│   ├── src/             # Source code
-│   └── ...
-│
-└── package.json         # Root package.json for managing both implementations
+projsite-monorepo/
+├── apps/
+│   ├── projsite-mongo/       # MongoDB-based API
+│   ├── projsite-postgres/    # PostgreSQL-based API on Cloudflare Workers
+│   ├── projsite-web/         # Next.js web application (future)
+│   └── projsite-mobile/      # Expo mobile application (future)
+└── packages/
+    ├── projsite-types/       # Shared TypeScript types
+    └── projsite-auth/        # Shared authentication utilities
 ```
 
-## Setup
+## Getting Started
 
-1. Install dependencies for both implementations:
+### Prerequisites
+
+- [Bun](https://bun.sh/) (v1.0.0 or higher)
+- [Node.js](https://nodejs.org/) (v18.0.0 or higher)
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+
 ```bash
-bun run install:all
+bun install
 ```
 
-2. Set up environment variables:
-- For PostgreSQL version:
-  ```bash
-  cd projsite-postgres
-  cp .dev.vars.example .dev.vars
-  # Update .dev.vars with your PostgreSQL configuration
-  ```
-- For MongoDB version:
-  ```bash
-  cd projsite-mongo
-  cp .dev.vars.example .dev.vars
-  # Update .dev.vars with your MongoDB configuration
-  ```
+### Development
 
-## Development
+To start development on all apps and packages:
 
-You can run either implementation in development mode:
+```bash
+bun run dev
+```
 
-- PostgreSQL version:
-  ```bash
-  bun run dev:pg
-  ```
+To start development on a specific app or package:
 
-- MongoDB version:
-  ```bash
-  bun run dev:mongo
-  ```
+```bash
+bun run dev --filter=@projsite/api-mongo  # MongoDB API
+bun run dev --filter=@projsite/api-postgres  # PostgreSQL API
+```
 
-## Deployment
+### Building
 
-Deploy either implementation to Cloudflare Workers:
+To build all apps and packages:
 
-- PostgreSQL version:
-  ```bash
-  bun run deploy:pg
-  ```
+```bash
+bun run build
+```
 
-- MongoDB version:
-  ```bash
-  bun run deploy:mongo
-  ```
+To build a specific app or package:
+
+```bash
+bun run build --filter=@projsite/api-mongo
+```
 
 ## API Documentation
 
-Both implementations expose their API documentation at `/swagger` when running the server.
+### MongoDB API (@projsite/api-mongo)
 
-## Common Features
+The MongoDB API is built with Hono and MongoDB. Documentation is available via Swagger UI at `/docs` when running the development server.
 
-Both implementations provide:
-- Organization management
-- Project management
-- User authentication via Clerk
-- Swagger documentation
-- TypeScript support
-- Cloudflare Workers deployment
+### PostgreSQL API (@projsite/api-postgres)
 
-The main difference is in the database layer and ORM used:
-- PostgreSQL version uses Drizzle ORM
-- MongoDB version uses Mongoose
+The PostgreSQL API is built with Hono, Drizzle ORM, and PostgreSQL on Cloudflare Workers. Documentation is available via Swagger UI at `/docs` when running the development server.
 
-## Performance
+## Shared Packages
 
-Using Bun as the runtime provides several advantages:
-- Faster startup times
-- Better TypeScript performance
-- Native SQLite3 support
-- Compatible with Node.js packages
-- Built-in test runner and bundler
+### @projsite/types
+
+Shared TypeScript types used across the monorepo.
+
+### @projsite/auth
+
+Shared authentication utilities used by both APIs and frontend applications.
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the process for submitting pull requests.
+
+## License
+
+This project is licensed under the ISC License.
