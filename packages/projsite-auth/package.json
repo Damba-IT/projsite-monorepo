@@ -10,14 +10,13 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --dts",
-    "dev": "tsup src/index.ts --dts --watch",
+    "build": "echo 'Add build command here'",
+    "dev": "echo 'Add dev command here'",
     "clean": "rm -rf dist node_modules",
     "lint": "echo 'Add linting command here'",
     "test": "echo 'Add testing command here'"
   },
   "dependencies": {
-    "@clerk/backend": "^1.23.11",
     "@projsite/types": "*"
   },
   "devDependencies": {
