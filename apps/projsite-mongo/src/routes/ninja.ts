@@ -4,7 +4,7 @@ import type { HonoEnv } from '../types';
 import {
   createNinjaOrderSchema,
   updateNinjaOrderSchema,
-} from 'projsite-types/schemas';
+} from '@projsite/types';
 import { NinjaOrderService } from "../services/ninja-order-service";
 import { idParamSchema } from '../utils/validation';
 import { HTTPException } from 'hono/http-exception';

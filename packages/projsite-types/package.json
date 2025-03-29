@@ -1,23 +1,46 @@
 {
   "name": "@projsite/types",
   "version": "0.1.0",
-  "description": "Shared TypeScript types for Projsite applications",
+  "description": "Shared TypeScript types and schemas for Projsite applications",
+  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    }
+  },
   "files": [
-    "dist/**"
+    "dist",
+    "README.md"
   ],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --dts",
-    "dev": "tsup src/index.ts --dts --watch",
-    "clean": "rm -rf dist node_modules",
-    "lint": "echo 'Add linting command here'",
-    "test": "echo 'Add testing command here'"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "prepare": "bun run build"
+  },
+  "peerDependencies": {
+    "mongodb": "^6.0.0",
+    "zod": "^3.0.0"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "bun-types": "latest",
+    "eslint": "^8.0.0",
+    "mongodb": "^6.0.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.0.0",
+    "zod": "^3.22.4"
   }
 } 

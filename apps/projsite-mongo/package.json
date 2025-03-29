@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "bun --hot src/server.ts",
     "start": "bun src/server.ts",
-    "build": "bun build src/server.ts --outdir dist --target bun",
-    "build:prod": "bun build src/server.ts --outdir dist --target bun --minify",
+    "build": "bun build src/server.ts --outdir dist --target bun --external '@projsite/types'",
+    "build:prod": "bun build src/server.ts --outdir dist --target bun --minify --external '@projsite/types'",
     "clean": "rm -rf dist node_modules",
     "lint": "echo 'Add linting command here'"
   },
@@ -14,7 +14,6 @@
     "@types/mongodb": "^4.0.7",
     "bun-types": "latest",
     "typescript": "^5.7.3",
-    "@projsite/types": "*",
     "@types/node": "^22.13.1"
   },
   "dependencies": {
@@ -23,6 +22,7 @@
     "@hono/swagger-ui": "^0.5.0",
     "@hono/zod-validator": "^0.4.2",
     "@projsite/auth": "*",
+    "@projsite/types": "*",
     "hono": "^4.7.0",
     "mongodb": "^6.13.0",
     "zod": "^3.24.1"
