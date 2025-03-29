@@ -4,7 +4,7 @@ import { BaseEntity, ProjectStatus } from '../common';
 export interface Project extends BaseEntity {
   project_id: string;
   name: string;
-  organization_id: ObjectId;
+  company_id: ObjectId;
   start_date: Date;
   end_date: Date;
   status: ProjectStatus;

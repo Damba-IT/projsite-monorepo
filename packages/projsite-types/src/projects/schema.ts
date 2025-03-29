@@ -40,7 +40,7 @@ const formValidationRulesSchema = z.object({
 export const createProjectSchema = z.object({
   project_id: z.string(),
   name: z.string().min(1, 'Project name is required'),
-  organization_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
+  company_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
   start_date: z.coerce.date(),
   end_date: z.coerce.date(),
   location_address: z.string().optional(),

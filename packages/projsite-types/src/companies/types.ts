@@ -1,15 +1,15 @@
 import { BaseEntity } from '../common';
 
-export interface Organization extends BaseEntity {
+export interface Company extends BaseEntity {
   name: string;
   active: boolean;
   is_deleted: boolean;
   logo?: string;
-  settings: OrganizationSettings;
+  settings: CompanySettings;
   created_by_user?: string;
   created_by_service?: string;
 } 
 
-export interface OrganizationSettings {
+export interface CompanySettings {
   warehouse_module: boolean;
 } 

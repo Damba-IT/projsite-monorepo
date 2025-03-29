@@ -4,5 +4,5 @@
 
 export * from './common';
 export * from './ninja-orders';
-export * from './organizations';
+export * from './companies';
 export * from './projects'; 
