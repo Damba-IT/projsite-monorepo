@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "bun --hot src/server.ts",
     "start": "bun src/server.ts",
-    "build": "bun build src/index.ts --outdir dist --target node --format esm",
-    "build:vercel": "bun build-for-vercel.js",
-    "vercel-build": "bun run build:vercel",
+    "build": "bun build src/index.ts --outdir dist --target node --external mongodb --format esm",
+    "vercel-build": "bun run build",
     "clean": "rm -rf dist node_modules",
     "lint": "echo 'Add linting command here'"
   },

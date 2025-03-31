@@ -1,27 +1,16 @@
-// Simple wrapper API handler for Vercel
+// Import the Hono app from the compiled output
 import { app } from '../dist/index.js';
+import { handle } from '@hono/node-server/vercel';
 
-// Export the request handler
-export default async function handler(req, res) {
-  // Use the standard Hono handler
-  try {
-    // Convert Node.js req/res to Web standard Request/Response
-    const response = await app.fetch(req);
-    
-    // Copy status
-    res.statusCode = response.status;
-    
-    // Copy headers
-    for (const [key, value] of response.headers.entries()) {
-      res.setHeader(key, value);
-    }
-    
-    // Send body
-    const body = await response.arrayBuffer();
-    res.end(Buffer.from(body));
-  } catch (error) {
-    console.error('Error handling request:', error);
-    res.statusCode = 500;
-    res.end(JSON.stringify({ error: 'Internal Server Error' }));
+// Disable built-in Vercel helpers for proper Hono handling
+process.env.NODEJS_HELPERS = '0';
+
+// Vercel configuration
+export const config = {
+  api: {
+    bodyParser: false
   }
-} 
+};
+
+// Export the handler
+export default handle(app); 
