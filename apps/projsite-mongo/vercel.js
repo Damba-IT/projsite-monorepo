@@ -1,9 +1,10 @@
-// Simple wrapper API handler for Vercel
-import { app } from '../dist/index.js';
+// Direct entry point for Vercel
+// This is a special file that Vercel will recognize for deployment
 
-// Export the request handler
+import { app } from './dist/index.js';
+
+// Export a handler function that Vercel can use
 export default async function handler(req, res) {
-  // Use the standard Hono handler
   try {
     // Convert Node.js req/res to Web standard Request/Response
     const response = await app.fetch(req);
@@ -22,6 +23,6 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error handling request:', error);
     res.statusCode = 500;
-    res.end(JSON.stringify({ error: 'Internal Server Error' }));
+    res.end(JSON.stringify({ error: 'Internal Server Error', message: error.message }));
   }
 } 
