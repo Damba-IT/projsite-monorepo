@@ -39,29 +39,15 @@ This happened because:
    export { app };
    ```
 
-4. **Updated Vercel Configuration**:
+4. **Included Shared Packages in the Bundle**:
    ```json
-   {
-     "builds": [{
-       "src": "api/index.js",
-       "use": "@vercel/node",
-       "config": {
-         "includeFiles": ["dist/**"]
-       }
-     }],
-     "routes": [{
-       "src": "/(.*)",
-       "dest": "/api/index.js"
-     }],
-     "env": {
-       "NODEJS_HELPERS": "0"
-     }
-   }
+   // From:
+   "build": "... --external '@projsite/types' --external '@projsite/auth' --external mongodb --format esm"
+   
+   // To:
+   "build": "... --external mongodb --format esm"
    ```
-   This ensures:
-   - The dist directory (with bundled code) is included in the deployment
-   - All requests are routed to our API handler
-   - Node.js helpers are disabled for Hono compatibility
+   By removing shared packages from the external dependencies list, we ensure they're properly bundled with the application code, making them available in the Vercel Function environment.
 
 ## Deployment Steps
 
