@@ -21,7 +21,7 @@ app.use('*', cors());
 app.use('*', prettyJSON());
 
 // Auth middleware
-//app.use('*', clerkMiddleware());
+app.use('*', clerkMiddleware());
 
 // Database middleware
 app.use('*', db);
@@ -32,9 +32,9 @@ import projectsRouter from './routes/projects';
 import ninjaRouter from './routes/ninja';
 
 // Protected routes - require authentication
-app.use('/api/v1/companies/*', auth);
-app.use('/api/v1/projects/*', auth);
-app.use('/api/v1/ninja/*', auth);
+//app.use('/api/v1/companies/*', auth);
+//app.use('/api/v1/projects/*', auth);
+//app.use('/api/v1/ninja/*', auth);
 
 app.route('/api/v1/companies', companiesRouter);
 app.route('/api/v1/projects', projectsRouter);
