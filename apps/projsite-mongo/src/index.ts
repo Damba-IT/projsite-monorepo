@@ -21,7 +21,7 @@ app.use('*', cors());
 app.use('*', prettyJSON());
 
 // Auth middleware
-app.use('*', clerkMiddleware());
+//app.use('*', clerkMiddleware());
 
 // Database middleware
 app.use('*', db);
