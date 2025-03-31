@@ -1,8 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index.js" }
-  ],
-  "env": {
-    "NODEJS_HELPERS": "0"
-  }
+    { "source": "/(.*)", "destination": "/api" }
+  ]
 } 
