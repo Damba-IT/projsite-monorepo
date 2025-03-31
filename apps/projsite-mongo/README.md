@@ -1,11 +1,88 @@
-# Projsite API (MongoDB Version)
+# Projsite MongoDB API
 
-This is the MongoDB version of the Projsite API, built with:
-- Hono framework
-- MongoDB
-- TypeScript
-- Bun Runtime
-- Clerk Authentication
+This is the MongoDB-based API for Projsite, built with the Hono framework and TypeScript.
+
+## Features
+
+- RESTful API endpoints for managing projects and companies
+- MongoDB database integration
+- Clerk authentication
+- OpenAPI documentation with Swagger UI
+- Zod validation for request/response schemas
+
+## Local Development
+
+```bash
+# Install dependencies
+bun install
+
+# Run in development mode with hot reloading
+bun run dev
+
+# Build for production
+bun run build
+```
+
+## API Documentation
+
+Once the server is running, you can access the Swagger UI documentation at:
+
+```
+http://localhost:8787/api/docs
+```
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in the required values:
+
+```bash
+cp .env.example .env
+```
+
+Required environment variables:
+
+- `MONGODB_URI`: MongoDB connection string
+- `CLERK_SECRET_KEY`: Clerk secret key
+- `CLERK_PUBLISHABLE_KEY`: Clerk publishable key
+
+## Vercel Deployment
+
+This API can be deployed to Vercel Functions using the Node.js runtime. See the detailed deployment guide in [VERCEL.md](./VERCEL.md).
+
+Quick deployment steps:
+
+1. Link to Vercel project:
+   ```bash
+   npx vercel link
+   ```
+
+2. Deploy to Vercel:
+   ```bash
+   npx vercel
+   ```
+
+For a summary of the deployment setup and next steps, see [DEPLOYMENT-SUMMARY.md](./DEPLOYMENT-SUMMARY.md).
+
+## Project Structure
+
+```
+src/
+├── index.ts          # Main application setup
+├── server.ts         # Server entry point
+├── routes/           # API route handlers
+├── schemas/          # Zod validation schemas
+├── services/         # Business logic and database operations
+├── middleware/       # Custom middleware
+├── utils/            # Utility functions
+└── types/            # TypeScript type definitions
+```
+
+## Monorepo Context
+
+This API is part of the Projsite monorepo and uses shared packages:
+
+- `@projsite/types`: Shared TypeScript types
+- `@projsite/auth`: Shared authorization utilities
 
 ## Setup
 

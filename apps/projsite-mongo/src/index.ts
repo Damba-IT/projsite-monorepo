@@ -78,4 +78,6 @@ app.get('/api/health', async (c) => {
   }
 });
 
-export default app; 
+// Export both as default and named for compatibility
+export default app;
+export { app }; 
