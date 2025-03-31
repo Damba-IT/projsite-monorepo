@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "bun --hot src/server.ts",
     "start": "bun src/server.ts",
-    "build": "bun build src/index.ts --outdir dist --target node --external '@projsite/types' --external '@projsite/auth' --external mongodb --format esm",
+    "build": "bun build src/index.ts --outdir dist --target node --external mongodb --format esm",
     "vercel-build": "bun run build",
     "clean": "rm -rf dist node_modules",
     "lint": "echo 'Add linting command here'"
