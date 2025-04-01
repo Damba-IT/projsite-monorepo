@@ -7,6 +7,7 @@
     "start": "bun src/server.ts",
     "build": "bun build src/index.ts --outdir dist --target node --external mongodb --format esm",
     "vercel-build": "bun run build",
+    "vercel:local": "bun run build && bun ./dist/index.js",
     "clean": "rm -rf dist node_modules",
     "lint": "echo 'Add linting command here'"
   },

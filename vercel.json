@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "projects": [
+    {
+      "name": "projsite-web",
+      "path": "apps/projsite-web"
+    },
+    {
+      "name": "projsite-api",
+      "path": "apps/projsite-mongo"
+    }
+  ]
+} 

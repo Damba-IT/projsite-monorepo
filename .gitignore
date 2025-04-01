@@ -88,3 +88,4 @@ dist/
 .DS_Store
 
 todo.txt
+.vercel

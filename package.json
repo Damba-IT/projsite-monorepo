@@ -13,11 +13,14 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "clean": "turbo run clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "vercel:dev": "bun run build && vercel dev",
+    "vercel:deploy": "bun run build && vercel deploy"
   },
   "devDependencies": {
     "prettier": "3.2.5",
-    "turbo": "2.1.0"
+    "turbo": "2.1.0",
+    "vercel": "^41.4.1"
   },
   "packageManager": "bun@1.0.30",
   "engines": {
