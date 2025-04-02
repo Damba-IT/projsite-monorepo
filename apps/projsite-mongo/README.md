@@ -1,69 +1,52 @@
-# Projsite MongoDB API
+# @projsite/api-mongo
 
-This is the MongoDB-based API for Projsite, built with the Hono framework and TypeScript.
+A MongoDB-powered backend API service built with the Hono framework, designed to run on Vercel's serverless infrastructure.
 
-## Features
+## 🚀 Features
 
-- RESTful API endpoints for managing projects and companies
-- MongoDB database integration
-- Clerk authentication
-- OpenAPI documentation with Swagger UI
-- Zod validation for request/response schemas
+- Built with [Hono](https://hono.dev/) - a lightweight, ultrafast web framework
+- MongoDB integration for data persistence
+- Authentication via Clerk
+- API validation using Zod
+- Swagger UI for API documentation
+- TypeScript support
+- Vercel serverless deployment ready
 
-## Local Development
+## 📦 Installation
 
 ```bash
 # Install dependencies
 bun install
-
-# Run in development mode with hot reloading
-bun run dev
-
-# Build for production
-bun run build
 ```
 
-## API Documentation
+## 🔧 Configuration
 
-Once the server is running, you can access the Swagger UI documentation at:
+Create a `.env` file in the root directory based on `.env.example`:
 
+```env
+MONGODB_URI=your_mongodb_connection_string
+CLERK_SECRET_KEY=your_clerk_secret
+# Add other required environment variables
 ```
-http://localhost:8787/api/docs
-```
 
-## Environment Variables
-
-Copy `.env.example` to `.env` and fill in the required values:
+## 🛠️ Development
 
 ```bash
-cp .env.example .env
+# Start development server with hot reload
+bun run dev
+
+# Build the application
+bun run build
+
+# Test Vercel deployment locally
+bun run vercel:local
 ```
 
-Required environment variables:
+## 📁 Vercel Deployment Structure
 
-- `MONGODB_URI`: MongoDB connection string
-- `CLERK_SECRET_KEY`: Clerk secret key
-- `CLERK_PUBLISHABLE_KEY`: Clerk publishable key
+The project follows a specific structure required for Vercel serverless deployment:
 
-## Vercel Deployment
-
-This API can be deployed to Vercel Functions using the Node.js runtime. See the detailed deployment guide in [VERCEL.md](./VERCEL.md).
-
-Quick deployment steps:
-
-1. Link to Vercel project:
-   ```bash
-   npx vercel link
-   ```
-
-2. Deploy to Vercel:
-   ```bash
-   npx vercel
-   ```
-
-For a summary of the deployment setup and next steps, see [DEPLOYMENT-SUMMARY.md](./DEPLOYMENT-SUMMARY.md).
-
-## Project Structure
+## 📝 Project Structure
 
 ```
 src/
@@ -99,10 +82,6 @@ bun install
   - `SERVICE_API_KEY`: Your service API key
 
 3. Start MongoDB locally (if using local development):
-```bash
-# Using Docker
-docker run -d -p 27017:27017 --name mongodb mongo:latest
-```
 
 4. Run the development server:
 ```bash
@@ -131,22 +110,42 @@ bun run start
 
 The API documentation is available at `/swagger` when running the server.
 
-## Available Endpoints
-
-### Organizations
-- `GET /api/organizations` - List all organizations
-- `GET /api/organizations/:id` - Get organization by ID
-- `POST /api/organizations` - Create new organization
-- `PUT /api/organizations/:id` - Update organization
-- `DELETE /api/organizations/:id` - Delete organization (soft delete)
-
-### Projects
-- `GET /api/projects` - List all projects
-- `GET /api/projects/:id` - Get project by ID
-- `POST /api/projects` - Create new project
-- `PUT /api/projects/:id` - Update project
-- `DELETE /api/projects/:id` - Delete project (soft delete)
 
 ## Development
 
-This API runs alongside the PostgreSQL version of the API, allowing for parallel development and testing of both database implementations. 
+This API runs alongside the PostgreSQL version of the API, allowing for parallel development and testing of both database implementations.
+
+### Understanding the Vercel Bundle Structure
+
+1. **Source Code (`src/`)**
+   - Contains your main Hono application code
+   - Written in TypeScript
+   - Entry point is typically `src/index.ts`
+
+2. **Build Output (`dist/`)**
+   - Generated during `bun run build`
+   - Contains the bundled application
+   - Build command: `bun build src/index.ts --outdir dist --target node --external mongodb --format esm`
+
+3. **Vercel Entry Point (`api/index.js`)**
+   ```javascript
+   import app from '../dist/index.js';
+   import { handle } from '@hono/node-server/vercel';
+   
+   export default handle(app);
+   ```
+   - Required by Vercel for serverless deployment
+   - Imports the bundled application from `dist/`
+   - Uses Hono's Vercel adapter to handle requests
+
+4. **Vercel Configuration (`vercel.json`)**
+   - Configures how Vercel serves your application
+   - Defines build settings and routing
+
+### Build & Deploy Flow
+
+1. When you deploy to Vercel:
+   - `vercel-build` script runs `bun run build`
+   - Source code is bundled into `dist/`
+   - Vercel uses `api/index.js` as the serverless function entry point
+   - The bundled app is imported and served through Vercel's infrastructure 

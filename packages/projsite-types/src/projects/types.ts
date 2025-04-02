@@ -1,20 +1,32 @@
-import { ObjectId } from 'mongodb';
-import { BaseEntity, ProjectStatus } from '../common';
+import { BaseEntity, DateRange, Location } from '../common/types';
+import { createProjectSchema, updateProjectSchema } from './schema';
+import { z } from 'zod';
 
 export interface Project extends BaseEntity {
   project_id: string;
-  name: string;
-  company_id: ObjectId;
-  start_date: Date;
-  end_date: Date;
-  status: ProjectStatus;
-  location_address?: string;
-  location_formatted_address?: string;
-  location_place_id?: string;
-  location_lat?: string;
-  location_lng?: string;
+  project_name: string;
+  company_id: string;
+  status: boolean;
+  location: Location;
+  date_range: DateRange;
   settings: ProjectSettings;
+} 
+
+export interface ProjectSettings {
+  waste_booking_color: string;
+  resource_booking_color: string;
+  information: string;
+  shipment_module: boolean;
+  checkpoint_module: boolean;
+  warehouse_module: boolean;
+  waste_module: boolean;
+  scanner_module: boolean;
+  auto_approval: boolean;
+  waste_auto_approval: boolean;
+  sub_projects: boolean;
+  unbooked: boolean;
   form_validation_rules: FormValidationRules;
+  custom_project?: string;
 } 
 
 export interface FormValidationRules {
@@ -40,16 +52,5 @@ export interface FormValidationRules {
   };
 } 
 
-export interface ProjectSettings {
-  waste_booking_color: string;
-  resource_booking_color: string;
-  information: string;
-  shipment_module: boolean;
-  checkpoint_module: boolean;
-  warehouse_module: boolean;
-  waste_module: boolean;
-  inbox_module: boolean;
-  auto_approval: boolean;
-  waste_auto_approval: boolean;
-  sub_projects_enabled: boolean;
-} 
+export type CreateProject = z.infer<typeof createProjectSchema>;
+export type UpdateProject = z.infer<typeof updateProjectSchema>; 

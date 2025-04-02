@@ -1,18 +1,5 @@
 import { z } from 'zod';
-
-const projectSettingsSchema = z.object({
-  waste_booking_color: z.string().default('#456ed5'),
-  resource_booking_color: z.string().default('#aed5ab'),
-  information: z.string().default(''),
-  shipment_module: z.boolean().default(true),
-  checkpoint_module: z.boolean().default(false),
-  warehouse_module: z.boolean().default(false),
-  waste_module: z.boolean().default(false),
-  inbox_module: z.boolean().default(false),
-  auto_approval: z.boolean().default(false),
-  waste_auto_approval: z.boolean().default(true),
-  sub_projects_enabled: z.boolean().default(false)
-});
+import { dateRangeSchema, locationSchema } from '../common/schema';
 
 const formValidationRulesSchema = z.object({
   shipment_booking: z.object({
@@ -37,28 +24,36 @@ const formValidationRulesSchema = z.object({
   })
 });
 
+const projectSettingsSchema = z.object({
+  waste_booking_color: z.string().default('#456ed5'),
+  resource_booking_color: z.string().default('#aed5ab'),
+  information: z.string().default(''),
+  shipment_module: z.boolean().default(true),
+  checkpoint_module: z.boolean().default(false),
+  warehouse_module: z.boolean().default(false),
+  waste_module: z.boolean().default(false),
+  scanner_module: z.boolean().default(false),
+  auto_approval: z.boolean().default(false),
+  waste_auto_approval: z.boolean().default(true),
+  sub_projects: z.boolean().default(false),
+  unbooked: z.boolean().default(false),
+  form_validation_rules: formValidationRulesSchema,
+  custom_project: z.string().optional()
+});
+
 export const createProjectSchema = z.object({
   project_id: z.string(),
-  name: z.string().min(1, 'Project name is required'),
+  project_name: z.string().min(1, 'Project name is required'),
   company_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
-  start_date: z.coerce.date(),
-  end_date: z.coerce.date(),
-  location_address: z.string().optional(),
-  location_formatted_address: z.string().optional(),
-  location_place_id: z.string().optional(),
-  location_lat: z.string().optional(),
-  location_lng: z.string().optional(),
+  location: locationSchema,
+  date_range: dateRangeSchema,
   settings: projectSettingsSchema,
-  form_validation_rules: formValidationRulesSchema,
-  created_by: z.string()
+  created_by: z.string().optional(),
+  status: z.boolean().default(true)
 });
 
 export const updateProjectSchema = createProjectSchema
   .partial()
   .extend({
-    status: z.enum(['active', 'inactive']).optional(),
-    last_modified_by: z.string()
+    status: z.boolean().optional()
   });
-
-export type CreateProject = z.infer<typeof createProjectSchema>;
-export type UpdateProject = z.infer<typeof updateProjectSchema>; 

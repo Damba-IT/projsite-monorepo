@@ -5,11 +5,9 @@ const companySettingsSchema = z.object({
 });
 
 export const createCompanySchema = z.object({
-  name: z.string().min(1, 'Company name is required'),
-  logo: z.string().optional(),
+  company_name: z.string().min(1, 'Company name is required'),
+  image_url: z.string().optional(),
   settings: companySettingsSchema,
-  created_by_user: z.string().optional(),
-  created_by_service: z.string().optional()
 });
 
 export const updateCompanySchema = createCompanySchema
@@ -19,5 +17,6 @@ export const updateCompanySchema = createCompanySchema
     last_modified_by: z.string()
   });
 
-export type CreateCompany = z.infer<typeof createCompanySchema>;
-export type UpdateCompany = z.infer<typeof updateCompanySchema>; 
+export const searchCompanySchema = z.object({
+  query: z.string().min(1).max(100)
+});

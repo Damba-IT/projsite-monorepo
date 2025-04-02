@@ -1,15 +1,18 @@
-import { BaseEntity } from '../common';
-
+import { BaseEntity } from '../common/types';
+import { createCompanySchema, searchCompanySchema, updateCompanySchema } from './schema';
+import { z } from 'zod';
 export interface Company extends BaseEntity {
-  name: string;
+  company_name: string;
   active: boolean;
   is_deleted: boolean;
-  logo?: string;
+  image_url?: string;
   settings: CompanySettings;
-  created_by_user?: string;
-  created_by_service?: string;
 } 
 
 export interface CompanySettings {
   warehouse_module: boolean;
 } 
+
+export type CreateCompany = z.infer<typeof createCompanySchema>;
+export type UpdateCompany = z.infer<typeof updateCompanySchema>;  
+export type SearchCompanyQuery = z.infer<typeof searchCompanySchema>;

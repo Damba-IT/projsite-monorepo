@@ -5,15 +5,15 @@ import {
   createCompanySchema,
   updateCompanySchema,
   searchCompanySchema
-} from '../schemas/companies';
+} from '@projsite/types';
 import { CompanyService } from '../services/company-service';
 import { idParamSchema } from '../utils/validation';
 import { validationErrorHandler } from '../middleware/error-handler';
 import { HTTPException } from 'hono/http-exception';
 
-const app = new Hono<HonoEnv>();
+const companiesRouter = new Hono<HonoEnv>();
 
-app
+companiesRouter
   .get('/', async (c) => {
     const db = c.get('db');
     const service = new CompanyService(db);
@@ -101,4 +101,4 @@ app
     }
   );
 
-export default app; 
+export default companiesRouter; 

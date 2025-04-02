@@ -30,6 +30,10 @@ app.use('*', db);
 import companiesRouter from './routes/companies';
 import projectsRouter from './routes/projects';
 import ninjaRouter from './routes/ninja';
+import resourceRouter from './routes/resources';
+//import subProjectRouter from './routes/sub-projects';
+//import zoneRouter from './routes/unloading-zones';
+
 
 // Protected routes - require authentication
 app.use('/api/v1/companies/*', auth);

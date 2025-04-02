@@ -1,180 +1,164 @@
 import { Db, ObjectId, WithId } from 'mongodb';
 import { BaseService } from './base-service';
 import { Collections } from '../utils/collections';
-import type { Project, ProjectStatus, Organization, ProjectSettings, FormValidationRules } from '../types';
-import type { CreateProjectInput, UpdateProjectInput } from '../schemas/projects';
+import type { Company, CreateProject, UpdateProject, Project  } from '@projsite/types';
 import { toObjectId } from '../utils/validation';
 
-type ProjectWithOrg = WithId<Project> & { organization: WithId<Organization> | null };
+type ProjectWithCompany = WithId<Project> & { company: WithId<Company> | null };
 
 export class ProjectService extends BaseService<Project> {
   constructor(db: Db) {
     super(db, Collections.PROJECTS);
   }
-
-  async findAll(): Promise<ProjectWithOrg[]> {
-    const projects = await super.findAll({ status: { $ne: 'deleted' as ProjectStatus } });
-    return await this.populateOrganizations(projects);
+  async findAll(): Promise<ProjectWithCompany[]> {
+    const projects = await super.findAll({ status: { $ne: false } });
+    return await this.populateCompanies(projects);
   }
 
-  async findById(id: string | ObjectId): Promise<ProjectWithOrg | null> {
+  async findById(id: string | ObjectId): Promise<ProjectWithCompany | null> {
     const project = await super.findOne({ 
       _id: toObjectId(id),
-      status: { $ne: 'deleted' as ProjectStatus }
+      status: { $ne: false },
     });
 
     if (!project) return null;
-    return await this.populateOrganization(project);
+    return await this.populateCompany(project);
   }
 
-  async create(data: CreateProjectInput): Promise<ProjectWithOrg | null> {
-    // Validate organization exists
-    const organization = await this.db.collection<Organization>(Collections.ORGANIZATIONS).findOne({ 
-      _id: data.organization_id,
+  async create(data: CreateProject): Promise<ProjectWithCompany | null> {
+    // Validate company exists
+    const company = await this.db.collection<Company>(Collections.COMPANIES).findOne({ 
+      _id: toObjectId(data.company_id),
       is_deleted: false
     });
 
-    if (!organization) return null;
+    if (!company) return null;
 
     // Zod has already validated and transformed the data with defaults
     const newProject: Omit<Project, '_id'> = {
       project_id: data.project_id,
-      name: data.name,
-      organization_id: data.organization_id,
-      start_date: data.start_date,
-      end_date: data.end_date,
-      status: 'active',
-      location_address: data.location_address,
-      location_formatted_address: data.location_formatted_address,
-      location_place_id: data.location_place_id,
-      location_lat: data.location_lat,
-      location_lng: data.location_lng,
-      created_by: data.created_by,
+      project_name: data.project_name,
+      company_id: data.company_id,
+      date_range: data.date_range,
+      status: true,
+      location: data.location,
       created_at: new Date(),
       updated_at: new Date(),
+      created_by: data.created_by,
       settings: data.settings,
-      form_validation_rules: data.form_validation_rules
     };
 
     const project = await super.create(newProject);
     if (!project) return null;
 
-    return { ...project, organization };
+    return { ...project, company };
   }
 
-  async update(id: string | ObjectId, data: UpdateProjectInput): Promise<ProjectWithOrg | null> {
-    // Validate organization if being updated
-    let organization = null;
-    if (data.organization_id) {
-      organization = await this.db.collection<Organization>(Collections.ORGANIZATIONS).findOne({ 
-        _id: data.organization_id,
+  async update(id: string | ObjectId, data: UpdateProject): Promise<ProjectWithCompany | null> {
+    // Validate company if being updated
+    let company = null;
+    if (data.company_id) {
+      company = await this.db.collection<Company>(Collections.COMPANIES).findOne({ 
+        _id: toObjectId(data.company_id),
         is_deleted: false
       });
 
-      if (!organization) return null;
+      if (!company) return null;
     }
 
     // Only include fields that are actually present in the update data
     const updateData: Partial<Project> = {
       ...(data.project_id && { project_id: data.project_id }),
-      ...(data.name && { name: data.name }),
-      ...(data.organization_id && { organization_id: data.organization_id }),
-      ...(data.start_date && { start_date: data.start_date }),
-      ...(data.end_date && { end_date: data.end_date }),
+      ...(data.project_name && { project_name: data.project_name }),
+      ...(data.company_id && { company_id: data.company_id }),
+      ...(data.date_range && { date_range: data.date_range }),
       ...(data.status && { status: data.status }),
-      ...(data.location_address && { location_address: data.location_address }),
-      ...(data.location_formatted_address && { location_formatted_address: data.location_formatted_address }),
-      ...(data.location_place_id && { location_place_id: data.location_place_id }),
-      ...(data.location_lat && { location_lat: data.location_lat }),
-      ...(data.location_lng && { location_lng: data.location_lng }),
-      ...(data.last_modified_by && { last_modified_by: data.last_modified_by }),
+      ...(data.location && { location: data.location }),
       ...(data.settings && { settings: data.settings }),
-      ...(data.form_validation_rules && { form_validation_rules: data.form_validation_rules }),
+      ...(data.created_by && { created_by: data.created_by }),
       updated_at: new Date()
     };
 
     const project = await super.update(id, updateData);
     if (!project) return null;
 
-    // Get organization details if not already fetched
-    if (!organization && project.organization_id) {
-      organization = await this.db.collection<Organization>(Collections.ORGANIZATIONS).findOne({ 
-        _id: project.organization_id,
+    // Get company details if not already fetched
+    if (!company && project.company_id) {
+      company = await this.db.collection<Company>(Collections.COMPANIES).findOne({ 
+        _id: toObjectId(project.company_id),
         is_deleted: false
       });
     }
 
-    return { ...project, organization };
+    return { ...project, company };
   }
 
   async softDelete(id: string | ObjectId): Promise<WithId<Project> | null> {
     return await super.update(id, { 
-      status: 'deleted' as ProjectStatus,
+      status: false,
       updated_at: new Date()
     });
   }
 
-  async findByOrganization(organizationId: string | ObjectId): Promise<ProjectWithOrg[]> {
-    const _id = toObjectId(organizationId);
+  async findByCompany(companyId: string | ObjectId): Promise<ProjectWithCompany[]> {
+    const _id = toObjectId(companyId);
     
-    // First verify organization exists
-    const organization = await this.db.collection<Organization>(Collections.ORGANIZATIONS).findOne({ 
+    // First verify company exists
+    const company = await this.db.collection<Company>(Collections.COMPANIES).findOne({ 
       _id,
       is_deleted: false
     });
 
-    if (!organization) return [];
-
+    if (!company) return [];
     const projects = await super.findAll({ 
-      organization_id: _id,
-      status: { $ne: 'deleted' as ProjectStatus }
+      company_id: _id.toString(),
+      status: { $ne: false }
     });
 
     return projects.map(project => ({
       ...project,
-      organization
+      company
     }));
   }
 
-  async findByDateRange(startDate: Date, endDate: Date): Promise<ProjectWithOrg[]> {
+  async findByDateRange(startDate: Date, endDate: Date): Promise<ProjectWithCompany[]> {
     const projects = await super.findAll({
-      start_date: { $lte: endDate },
-      end_date: { $gte: startDate },
-      status: { $ne: 'deleted' as ProjectStatus }
+      date_range: { from: { $lte: endDate }, to: { $gte: startDate } },
+      status: { $ne: false }
     });
 
-    return await this.populateOrganizations(projects);
+    return await this.populateCompanies(projects);
   }
 
-  private async populateOrganization(project: WithId<Project>): Promise<ProjectWithOrg> {
-    const organization = await this.db.collection<Organization>(Collections.ORGANIZATIONS).findOne({ 
-      _id: project.organization_id,
+  private async populateCompany(project: WithId<Project>): Promise<ProjectWithCompany> {
+    const company = await this.db.collection<Company>(Collections.COMPANIES).findOne({ 
+      _id: toObjectId(project.company_id),
       is_deleted: false
     });
 
-    return { ...project, organization };
+      return { ...project, company };
   }
 
-  private async populateOrganizations(projects: WithId<Project>[]): Promise<ProjectWithOrg[]> {
+  private async populateCompanies(projects: WithId<Project>[]): Promise<ProjectWithCompany[]> {
     if (projects.length === 0) return [];
 
-    // Get unique organization IDs
-    const orgIds = [...new Set(projects.map(p => p.organization_id))];
+    // Get unique company IDs
+    const companyIds = [...new Set(projects.map(p => p.company_id))];
     
-    // Fetch all organizations in one query
-    const organizations = await this.db.collection<Organization>(Collections.ORGANIZATIONS)
+    // Fetch all companies in one query
+    const companies = await this.db.collection<Company>(Collections.COMPANIES)
       .find({ 
-        _id: { $in: orgIds },
+        _id: { $in: companyIds.map(toObjectId) },
         is_deleted: false 
       })
       .toArray();
 
-    const orgMap = new Map(organizations.map(org => [org._id.toString(), org]));
+    const companyMap = new Map(companies.map(company => [company._id.toString(), company]));
 
-    // Map organizations to projects
+    // Map company to projects
     return projects.map(project => ({
       ...project,
-      organization: orgMap.get(project.organization_id.toString()) || null
+      company: companyMap.get(project.company_id.toString()) || null
     }));
   }
 } 

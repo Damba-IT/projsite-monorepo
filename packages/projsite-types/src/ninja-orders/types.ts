@@ -1,4 +1,4 @@
-import { BaseEntity } from '../common';
+import { BaseEntity } from '../common/types';
 import type { NinjaOrderCreatedByService, NinjaOrderStatus } from './schema';
 
 export interface NinjaOrder extends BaseEntity {

@@ -1,8 +1,7 @@
 import { Db, ObjectId } from 'mongodb';
 import { BaseService } from './base-service';
 import { Collections } from '../utils/collections';
-import type { Company } from '../types';
-import type { CreateCompanyInput, UpdateCompanyInput } from '../schemas/companies';
+import type { CreateCompany, UpdateCompany, Company } from '@projsite/types';
 
 export class CompanyService extends BaseService<Company> {
   constructor(db: Db) {
@@ -19,9 +18,10 @@ export class CompanyService extends BaseService<Company> {
     });
   }
 
-  async create(data: CreateCompanyInput) {
+  async create(data: CreateCompany) {
     const newCompany = {
       ...data,
+      active: true,
       is_deleted: false,
       created_at: new Date(),
       updated_at: new Date()
@@ -30,7 +30,7 @@ export class CompanyService extends BaseService<Company> {
     return await super.create(newCompany);
   }
 
-  async update(id: string | ObjectId, data: UpdateCompanyInput) {
+  async update(id: string | ObjectId, data: UpdateCompany) {
     const updateData = {
       ...data,
       updated_at: new Date()

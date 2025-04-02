@@ -4,9 +4,7 @@ import type { HonoEnv } from '../types';
 import {
   createProjectSchema,
   updateProjectSchema,
-  type CreateProjectInput,
-  type UpdateProjectInput
-} from '../schemas/projects';
+} from '@projsite/types';
 import { ProjectService } from "../services/project-service";
 import { idParamSchema } from '../utils/validation';
 import { validationErrorHandler } from '../middleware/error-handler';
