@@ -10,9 +10,9 @@ import { idParamSchema } from '../utils/validation';
 import { HTTPException } from 'hono/http-exception';
 import { validationErrorHandler } from '../middleware/error-handler';
 
-const app = new Hono<HonoEnv>();
+const ninjaRouter = new Hono<HonoEnv>();
 
-app
+ninjaRouter
   .get("/orders", async (c) => {
     const db = c.get('db');
     const service = new NinjaOrderService(db);
@@ -87,4 +87,4 @@ app
     }
   );
 
-export default app;
+export default ninjaRouter;

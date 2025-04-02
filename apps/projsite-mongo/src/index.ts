@@ -39,10 +39,12 @@ import resourceRouter from './routes/resources';
 app.use('/api/v1/companies/*', auth);
 app.use('/api/v1/projects/*', auth);
 app.use('/api/v1/ninja/*', auth);
+app.use('/api/v1/resources/*', auth);
 
 app.route('/api/v1/companies', companiesRouter);
 app.route('/api/v1/projects', projectsRouter);
 app.route('/api/v1/ninja', ninjaRouter);
+app.route('/api/v1/resources', resourceRouter);
 
 app.onError(handleError);
 

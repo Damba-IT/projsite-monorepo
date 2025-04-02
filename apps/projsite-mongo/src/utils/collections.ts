@@ -4,6 +4,7 @@ export const Collections = {
   PROJECTS: 'projects',
   USERS: 'users',
   NINJA_ORDERS: 'ninja_orders',
+  RESOURCES: 'resource',
 } as const;
 
 // Types
