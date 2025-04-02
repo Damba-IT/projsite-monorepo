@@ -12,26 +12,26 @@ This package is part of the Projsite monorepo and is automatically installed as 
 
 ```typescript
 // Import types
-import type { NinjaOrder, Project, Company } from '@projsite/types';
+import type { NinjaOrder, Project, Company } from "@projsite/types";
 
 // Import schemas for validation
-import { createNinjaOrderSchema, createProjectSchema } from '@projsite/types';
+import { createNinjaOrderSchema, createProjectSchema } from "@projsite/types";
 
 // Import specific domain types
-import type { NinjaOrderStatus, ProjectSettings } from '@projsite/types';
+import type { NinjaOrderStatus, ProjectSettings } from "@projsite/types";
 ```
 
 ### Using Schemas for Validation
 
 ```typescript
-import { createNinjaOrderSchema } from '@projsite/types';
+import { createNinjaOrderSchema } from "@projsite/types";
 
 // Validate data
 const result = createNinjaOrderSchema.parse({
-  service_type: 'delivery',
-  company_id: '123',
+  service_type: "delivery",
+  company_id: "123",
   total_cost: 100,
-  created_by_service: 'web'
+  created_by_service: "web",
 });
 
 // Type-safe validation
@@ -98,10 +98,12 @@ bun run lint
 ## Dependencies
 
 ### Peer Dependencies
+
 - `mongodb`: ^6.0.0
 - `zod`: ^3.0.0
 
 ### Development Dependencies
+
 - TypeScript
 - tsup (for building)
 - ESLint
@@ -109,4 +111,4 @@ bun run lint
 
 ## License
 
-UNLICENSED - Private package 
+UNLICENSED - Private package

@@ -70,11 +70,13 @@ This API is part of the Projsite monorepo and uses shared packages:
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 bun install
 ```
 
 2. Set up environment variables:
+
 - Copy `.env.example` to `.env`
 - Update the values in `.env` with your configuration:
   - `MONGODB_URI`: Your MongoDB connection string
@@ -84,6 +86,7 @@ bun install
 3. Start MongoDB locally (if using local development):
 
 4. Run the development server:
+
 ```bash
 bun run dev
 ```
@@ -91,6 +94,7 @@ bun run dev
 ## Deployment
 
 1. Set up your environment variables on your server:
+
 ```bash
 export MONGODB_URI="your-mongodb-uri"
 export CLERK_SECRET_KEY="your-clerk-secret-key"
@@ -98,6 +102,7 @@ export SERVICE_API_KEY="your-service-api-key"
 ```
 
 2. Build and run the application:
+
 ```bash
 # Build the application
 bun run build
@@ -110,7 +115,6 @@ bun run start
 
 The API documentation is available at `/swagger` when running the server.
 
-
 ## Development
 
 This API runs alongside the PostgreSQL version of the API, allowing for parallel development and testing of both database implementations.
@@ -118,22 +122,26 @@ This API runs alongside the PostgreSQL version of the API, allowing for parallel
 ### Understanding the Vercel Bundle Structure
 
 1. **Source Code (`src/`)**
+
    - Contains your main Hono application code
    - Written in TypeScript
    - Entry point is typically `src/index.ts`
 
 2. **Build Output (`dist/`)**
+
    - Generated during `bun run build`
    - Contains the bundled application
    - Build command: `bun build src/index.ts --outdir dist --target node --external mongodb --format esm`
 
 3. **Vercel Entry Point (`api/index.js`)**
+
    ```javascript
-   import app from '../dist/index.js';
-   import { handle } from '@hono/node-server/vercel';
-   
+   import app from "../dist/index.js";
+   import { handle } from "@hono/node-server/vercel";
+
    export default handle(app);
    ```
+
    - Required by Vercel for serverless deployment
    - Imports the bundled application from `dist/`
    - Uses Hono's Vercel adapter to handle requests
@@ -148,4 +156,4 @@ This API runs alongside the PostgreSQL version of the API, allowing for parallel
    - `vercel-build` script runs `bun run build`
    - Source code is bundled into `dist/`
    - Vercel uses `api/index.js` as the serverless function entry point
-   - The bundled app is imported and served through Vercel's infrastructure 
+   - The bundled app is imported and served through Vercel's infrastructure

@@ -14,9 +14,9 @@ export class ResourceService extends BaseService<Resource> {
    * @returns Promise resolving to an array of resources
    */
   async findByProjectId(projectId: string) {
-    return this.findAll({ 
+    return this.findAll({
       project_id: projectId,
-      active: { $ne: false }
+      active: { $ne: false },
     });
   }
 
@@ -26,7 +26,7 @@ export class ResourceService extends BaseService<Resource> {
    * @returns Promise resolving to an array of active resources
    */
   async findActiveByProjectId(projectId: string) {
-    return this.findAll({ 
+    return this.findAll({
       project_id: projectId,
       active: true,
     });
@@ -38,9 +38,9 @@ export class ResourceService extends BaseService<Resource> {
    * @returns Promise resolving to an array of resources
    */
   async findByAssignedUser(userId: string) {
-    return this.findAll({ 
+    return this.findAll({
       assigned_users: userId,
-      status: { $ne: false }
+      status: { $ne: false },
     });
   }
 
@@ -51,9 +51,9 @@ export class ResourceService extends BaseService<Resource> {
    * @returns Promise resolving to the update result
    */
   async updateActiveStatus(id: string | ObjectId, active: boolean) {
-    return this.update(id, { 
+    return this.update(id, {
       active,
-      updated_at: new Date()
+      updated_at: new Date(),
     });
   }
 
@@ -64,16 +64,16 @@ export class ResourceService extends BaseService<Resource> {
    * @returns Promise resolving to the update result
    */
   async assignUsers(id: string | ObjectId, userIds: string[]) {
-    return this.update(id, { 
+    return this.update(id, {
       assigned_users: userIds,
-      updated_at: new Date()
+      updated_at: new Date(),
     });
   }
 
   async softDelete(id: string | ObjectId) {
-    return this.update(id, { 
+    return this.update(id, {
       active: false,
-      updated_at: new Date()
+      updated_at: new Date(),
     });
   }
-} 
+}

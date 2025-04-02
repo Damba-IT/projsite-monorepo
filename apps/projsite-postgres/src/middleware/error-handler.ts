@@ -1,7 +1,7 @@
 import { MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { HonoEnv } from "../types";
-import { response } from '../utils/response';
+import { response } from "../utils/response";
 
 export const errorHandler: MiddlewareHandler<HonoEnv> = async (c, next) => {
   try {
@@ -14,4 +14,4 @@ export const errorHandler: MiddlewareHandler<HonoEnv> = async (c, next) => {
     console.error(error);
     return response.error(c, "Internal Server Error", 500);
   }
-}; 
+};

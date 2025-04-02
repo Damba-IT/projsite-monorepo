@@ -10,7 +10,7 @@ export class ProjectService {
     return await this.db
       .select()
       .from(projects)
-      .where(eq(projects.status, 'active'))
+      .where(eq(projects.status, "active"))
       .orderBy(desc(projects.created_at));
   }
 
@@ -37,7 +37,7 @@ export class ProjectService {
       .where(
         and(
           eq(projects.organization_id, organizationId),
-          eq(projects.status, 'active')
+          eq(projects.status, "active")
         )
       )
       .orderBy(desc(projects.created_at));
@@ -48,7 +48,7 @@ export class ProjectService {
       .insert(projects)
       .values({
         ...data,
-        status: 'active'
+        status: "active",
       })
       .returning();
     return result;
@@ -61,18 +61,23 @@ export class ProjectService {
     if (data.start_date) baseUpdate.start_date = data.start_date;
     if (data.end_date) baseUpdate.end_date = data.end_date;
     if (data.status) baseUpdate.status = data.status;
-    if (data.location_address) baseUpdate.location_address = data.location_address;
-    if (data.location_formatted_address) baseUpdate.location_formatted_address = data.location_formatted_address;
-    if (data.location_place_id) baseUpdate.location_place_id = data.location_place_id;
+    if (data.location_address)
+      baseUpdate.location_address = data.location_address;
+    if (data.location_formatted_address)
+      baseUpdate.location_formatted_address = data.location_formatted_address;
+    if (data.location_place_id)
+      baseUpdate.location_place_id = data.location_place_id;
     if (data.location_lat) baseUpdate.location_lat = data.location_lat;
     if (data.location_lng) baseUpdate.location_lng = data.location_lng;
-    
+
     if (data.settings) {
-      baseUpdate.settings = data.settings as typeof projects.$inferInsert.settings;
+      baseUpdate.settings =
+        data.settings as typeof projects.$inferInsert.settings;
     }
-    
+
     if (data.form_validation_rules) {
-      baseUpdate.form_validation_rules = data.form_validation_rules as typeof projects.$inferInsert.form_validation_rules;
+      baseUpdate.form_validation_rules =
+        data.form_validation_rules as typeof projects.$inferInsert.form_validation_rules;
     }
 
     baseUpdate.last_modified_by = data.last_modified_by;
@@ -88,7 +93,7 @@ export class ProjectService {
   async delete(id: number) {
     const [result] = await this.db
       .update(projects)
-      .set({ status: 'deleted' })
+      .set({ status: "deleted" })
       .where(eq(projects.id, id))
       .returning();
     return result;
@@ -104,16 +109,11 @@ export class ProjectService {
 
   async findByDateRange(startDate: Date, endDate: Date) {
     const dateQuery = sql`${projects.start_date} <= ${endDate}::timestamp AND ${projects.end_date} >= ${startDate}::timestamp`;
-    
+
     return await this.db
       .select()
       .from(projects)
-      .where(
-        and(
-          eq(projects.status, 'active'),
-          dateQuery
-        )
-      )
+      .where(and(eq(projects.status, "active"), dateQuery))
       .orderBy(desc(projects.start_date));
   }
 
@@ -133,7 +133,7 @@ export class ProjectService {
       .from(projects)
       .where(
         and(
-          eq(projects.status, 'active'),
+          eq(projects.status, "active"),
           sql`${haversineFormula} <= ${radiusKm}::float8`
         )
       )

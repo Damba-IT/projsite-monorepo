@@ -1,8 +1,8 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm', 'cjs'],
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
   dts: true,
   splitting: false,
   sourcemap: true,
@@ -11,7 +11,7 @@ export default defineConfig({
   minify: false,
   outExtension({ format }) {
     return {
-      js: format === 'esm' ? '.js' : '.cjs',
-    }
+      js: format === "esm" ? ".js" : ".cjs",
+    };
   },
-}); 
+});

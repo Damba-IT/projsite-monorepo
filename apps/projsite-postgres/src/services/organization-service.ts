@@ -1,7 +1,10 @@
 import { eq } from "drizzle-orm";
 import { organizations } from "../db/schema";
 import type { Database } from "../types";
-import type { CreateOrganization, UpdateOrganization } from "../routes/organizations";
+import type {
+  CreateOrganization,
+  UpdateOrganization,
+} from "../routes/organizations";
 import { projects } from "../db/schema";
 
 export class OrganizationService {
@@ -50,4 +53,4 @@ export class OrganizationService {
       .from(projects)
       .where(eq(projects.organization_id, organizationId));
   }
-} 
+}

@@ -17,5 +17,3 @@ bun run dev --filter=@projsite/web
 ```
 
 ## Status
-
- 

@@ -1,6 +1,6 @@
-import { MongoClient } from 'mongodb';
-import type { MiddlewareHandler } from 'hono';
-import type { HonoEnv } from '../types';
+import { MongoClient } from "mongodb";
+import type { MiddlewareHandler } from "hono";
+import type { HonoEnv } from "../types";
 
 let client: MongoClient | null = null;
 
@@ -9,9 +9,9 @@ export const db: MiddlewareHandler<HonoEnv> = async (c, next) => {
     if (!client) {
       // Get MongoDB URI from either context.env (Cloudflare Workers) or process.env (Bun Runtime)
       const mongoUri = c.env?.MONGODB_URI || process.env.MONGODB_URI;
-      
+
       if (!mongoUri) {
-        throw new Error('MongoDB URI is not defined');
+        throw new Error("MongoDB URI is not defined");
       }
 
       client = new MongoClient(mongoUri, {
@@ -23,12 +23,12 @@ export const db: MiddlewareHandler<HonoEnv> = async (c, next) => {
       await client.connect();
     }
 
-    const db = client.db('projsite_db');
-    c.set('db', db);
-    
+    const db = client.db("projsite_db");
+    c.set("db", db);
+
     await next();
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error("MongoDB connection error:", error);
     throw error;
   }
-}; 
+};

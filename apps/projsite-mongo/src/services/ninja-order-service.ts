@@ -1,9 +1,13 @@
-import { Db, ObjectId, WithId } from 'mongodb';
-import { BaseService } from './base-service';
-import { Collections } from '../utils/collections';
-import { toObjectId } from '../utils/validation';
-import type { NinjaOrder } from 'projsite-types/types';
-import type { CreateNinjaOrder, UpdateNinjaOrder, NinjaOrderStatus } from 'projsite-types/schemas';
+import { Db, ObjectId, WithId } from "mongodb";
+import { BaseService } from "./base-service";
+import { Collections } from "../utils/collections";
+import { toObjectId } from "../utils/validation";
+import type { NinjaOrder } from "projsite-types/types";
+import type {
+  CreateNinjaOrder,
+  UpdateNinjaOrder,
+  NinjaOrderStatus,
+} from "projsite-types/schemas";
 
 export class NinjaOrderService extends BaseService<NinjaOrder> {
   constructor(db: Db) {
@@ -11,13 +15,15 @@ export class NinjaOrderService extends BaseService<NinjaOrder> {
   }
 
   async findAll() {
-    return await super.findAll({ status: { $ne: 'deleted' as NinjaOrderStatus } });
+    return await super.findAll({
+      status: { $ne: "deleted" as NinjaOrderStatus },
+    });
   }
 
   async findById(id: string | ObjectId) {
-    return await super.findOne({ 
+    return await super.findOne({
       _id: toObjectId(id),
-      status: { $ne: 'deleted' as NinjaOrderStatus }
+      status: { $ne: "deleted" as NinjaOrderStatus },
     });
   }
 
@@ -26,75 +32,79 @@ export class NinjaOrderService extends BaseService<NinjaOrder> {
       {
         $match: {
           company_id: companyId,
-          status: { $ne: 'deleted' as NinjaOrderStatus }
-        }
+          status: { $ne: "deleted" as NinjaOrderStatus },
+        },
       },
       {
         $lookup: {
           from: Collections.USERS,
-          let: { userId: '$created_by_user' },
+          let: { userId: "$created_by_user" },
           pipeline: [
             {
               $match: {
-                $expr: { $eq: ['$clerk_user_id', '$$userId'] }
-              }
+                $expr: { $eq: ["$clerk_user_id", "$$userId"] },
+              },
             },
             {
               $project: {
                 _id: 0,
                 full_name: {
                   $concat: [
-                    { $ifNull: ['$first_name', ''] },
-                    { $cond: [
-                      { $and: [
-                        { $ifNull: ['$first_name', false] },
-                        { $ifNull: ['$last_name', false] }
-                      ]},
-                      ' ',
-                      ''
-                    ]},
-                    { $ifNull: ['$last_name', ''] }
-                  ]
-                }
-              }
-            }
+                    { $ifNull: ["$first_name", ""] },
+                    {
+                      $cond: [
+                        {
+                          $and: [
+                            { $ifNull: ["$first_name", false] },
+                            { $ifNull: ["$last_name", false] },
+                          ],
+                        },
+                        " ",
+                        "",
+                      ],
+                    },
+                    { $ifNull: ["$last_name", ""] },
+                  ],
+                },
+              },
+            },
           ],
-          as: 'creator'
-        }
+          as: "creator",
+        },
       },
       {
         $addFields: {
           created_by_name: {
             $ifNull: [
-              { $arrayElemAt: ['$creator.full_name', 0] },
-              'Unknown User'
-            ]
-          }
-        }
+              { $arrayElemAt: ["$creator.full_name", 0] },
+              "Unknown User",
+            ],
+          },
+        },
       },
       {
         $project: {
-          creator: 0
-        }
-      }
+          creator: 0,
+        },
+      },
     ];
 
     return await this.collection.aggregate(pipeline).toArray();
   }
 
   async create(data: CreateNinjaOrder) {
-    const newNinjaOrder: Omit<NinjaOrder, '_id'> = {
-        service_type: data.service_type,
-        service_form_values: data.service_form_values,
-        company_id: data.company_id,
-        total_cost: data.total_cost,
-        status: 'pending' as NinjaOrderStatus,
-        notes: data.notes || '',
-        created_by_user: data.created_by_user,
-        created_by_service: data.created_by_service,
-        last_modified_by: data.created_by_user,
-        created_at: new Date(),
-        updated_at: new Date(),
+    const newNinjaOrder: Omit<NinjaOrder, "_id"> = {
+      service_type: data.service_type,
+      service_form_values: data.service_form_values,
+      company_id: data.company_id,
+      total_cost: data.total_cost,
+      status: "pending" as NinjaOrderStatus,
+      notes: data.notes || "",
+      created_by_user: data.created_by_user,
+      created_by_service: data.created_by_service,
+      last_modified_by: data.created_by_user,
+      created_at: new Date(),
+      updated_at: new Date(),
     };
 
     return await super.create(newNinjaOrder);
@@ -105,27 +115,29 @@ export class NinjaOrderService extends BaseService<NinjaOrder> {
       ...(data.total_cost && { total_cost: data.total_cost }),
       ...(data.status && { status: data.status }),
       ...(data.notes && { notes: data.notes }),
-      ...(data.service_form_values && { service_form_values: data.service_form_values }),
-      updated_at: new Date()
+      ...(data.service_form_values && {
+        service_form_values: data.service_form_values,
+      }),
+      updated_at: new Date(),
     };
 
     return await super.update(id, updateData);
   }
 
   async softDelete(id: string | ObjectId) {
-    return await super.update(id, { 
-      status: 'deleted' as NinjaOrderStatus,
-      updated_at: new Date()
+    return await super.update(id, {
+      status: "deleted" as NinjaOrderStatus,
+      updated_at: new Date(),
     });
   }
 
   async findByDateRange(startDate: Date, endDate: Date) {
     return await super.findAll({
-      created_at: { 
-        $gte: startDate, 
-        $lte: endDate 
+      created_at: {
+        $gte: startDate,
+        $lte: endDate,
       },
-      status: { $ne: 'deleted' as NinjaOrderStatus }
+      status: { $ne: "deleted" as NinjaOrderStatus },
     });
   }
 
@@ -134,9 +146,9 @@ export class NinjaOrderService extends BaseService<NinjaOrder> {
   }
 
   async findByCustomer(email: string) {
-    return await super.findAll({ 
+    return await super.findAll({
       customer_email: email,
-      status: { $ne: 'deleted' as NinjaOrderStatus }
+      status: { $ne: "deleted" as NinjaOrderStatus },
     });
   }
 }

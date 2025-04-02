@@ -1,7 +1,7 @@
-import { Db, ObjectId } from 'mongodb';
-import { BaseService } from './base-service';
-import { Collections } from '../utils/collections';
-import type { CreateCompany, UpdateCompany, Company } from '@projsite/types';
+import { Db, ObjectId } from "mongodb";
+import { BaseService } from "./base-service";
+import { Collections } from "../utils/collections";
+import type { CreateCompany, UpdateCompany, Company } from "@projsite/types";
 
 export class CompanyService extends BaseService<Company> {
   constructor(db: Db) {
@@ -13,8 +13,8 @@ export class CompanyService extends BaseService<Company> {
   }
 
   async findById(id: string | ObjectId) {
-    return await super.findOne({ 
-      _id: typeof id === 'string' ? new ObjectId(id) : id,
+    return await super.findOne({
+      _id: typeof id === "string" ? new ObjectId(id) : id,
     });
   }
 
@@ -24,7 +24,7 @@ export class CompanyService extends BaseService<Company> {
       active: true,
       is_deleted: false,
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
     };
 
     return await super.create(newCompany);
@@ -33,24 +33,25 @@ export class CompanyService extends BaseService<Company> {
   async update(id: string | ObjectId, data: UpdateCompany) {
     const updateData = {
       ...data,
-      updated_at: new Date()
+      updated_at: new Date(),
     };
 
     return await super.update(id, updateData);
   }
 
   async softDelete(id: string | ObjectId) {
-    return await super.update(id, { 
+    return await super.update(id, {
       is_deleted: true,
-      updated_at: new Date()
+      updated_at: new Date(),
     });
   }
 
   async getProjects(id: string | ObjectId) {
-    const projects = await this.db.collection(Collections.PROJECTS)
-      .find({ 
-        company_id: typeof id === 'string' ? new ObjectId(id) : id,
-        status: { $ne: 'deleted' }
+    const projects = await this.db
+      .collection(Collections.PROJECTS)
+      .find({
+        company_id: typeof id === "string" ? new ObjectId(id) : id,
+        status: { $ne: "deleted" },
       })
       .toArray();
 
@@ -58,22 +59,22 @@ export class CompanyService extends BaseService<Company> {
   }
 
   async searchCompanies(query: string) {
-    if (!query || query.trim() === '') {
-      throw new Error('Invalid or missing company name');
+    if (!query || query.trim() === "") {
+      throw new Error("Invalid or missing company name");
     }
 
     const pipeline = [
       {
         $search: {
-          index: 'companyAutoSuggestion',
+          index: "companyAutoSuggestion",
           autocomplete: {
             query: query,
-            path: 'company_name',
-            tokenOrder: 'sequential',
+            path: "company_name",
+            tokenOrder: "sequential",
             fuzzy: {
               maxEdits: 1,
               maxExpansions: 10,
-            }
+            },
           },
         },
       },
@@ -84,18 +85,18 @@ export class CompanyService extends BaseService<Company> {
         $project: {
           company_name: 1,
           is_organization: 1,
-          active: 1
+          active: 1,
         },
       },
     ];
 
     try {
       const companies = await this.collection.aggregate(pipeline).toArray();
-      
+
       if (companies.length === 0) {
         return {
           noMatch: true,
-          message: 'No matching document found',
+          message: "No matching document found",
           data: [],
         };
       }
@@ -104,8 +105,8 @@ export class CompanyService extends BaseService<Company> {
         data: companies,
       };
     } catch (error: any) {
-      console.error('Error occurred while fetching companies:', error);
+      console.error("Error occurred while fetching companies:", error);
       throw new Error(error.message);
     }
   }
-} 
+}

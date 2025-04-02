@@ -19,4 +19,4 @@ bun run dev --filter=@projsite/mobile
 
 ## Status
 
-This application is planned for future development and integration into the monorepo. 
+This application is planned for future development and integration into the monorepo.

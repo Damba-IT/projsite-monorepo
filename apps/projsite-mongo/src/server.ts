@@ -1,4 +1,4 @@
-import app from './index';
+import app from "./index";
 
 const port = process.env.PORT || 8787;
 
@@ -11,8 +11,8 @@ export default {
       env: {
         MONGODB_URI: process.env.MONGODB_URI,
         CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY,
-        CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY
-      }
+        CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+      },
     });
-  }
+  },
 };

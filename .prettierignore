@@ -1,0 +1,23 @@
+# Build outputs
+dist
+build
+.next
+out
+
+# Dependencies
+node_modules
+
+# Generated files
+*.generated.*
+*.min.*
+
+# Cache
+.turbo
+.cache
+
+# Coverage
+coverage
+
+# Misc
+.DS_Store
+*.pem 

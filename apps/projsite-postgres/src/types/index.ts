@@ -15,4 +15,4 @@ export type HonoEnv = {
   Variables: {
     db: Database;
   };
-}; 
+};

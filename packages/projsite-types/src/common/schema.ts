@@ -1,15 +1,14 @@
 import { z } from "zod";
 
-export const locationSchema = z
-  .object({
-    address: z.string(),
-    formatted_address: z.string(),
-    place_id: z.string(),
-    lat: z.number(),
-    lng: z.number(),
-  })
+export const locationSchema = z.object({
+  address: z.string(),
+  formatted_address: z.string(),
+  place_id: z.string(),
+  lat: z.number(),
+  lng: z.number(),
+});
 
-  export const dateRangeSchema = z
+export const dateRangeSchema = z
   .object({
     from: z.preprocess(
       arg => {
@@ -32,7 +31,7 @@ export const locationSchema = z
       z.date({
         required_error: "Please select an end date",
       })
-    )
+    ),
   })
   .refine(data => data.from || data.to, {
     message: "Please select a date range",

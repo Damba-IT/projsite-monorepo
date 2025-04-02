@@ -7,7 +7,7 @@ import * as schema from "../db/schema";
 export const db: MiddlewareHandler<HonoEnv> = async (c, next) => {
   const client = new Pool({ connectionString: c.env.DATABASE_URL });
   const db = drizzle(client, { schema });
-  c.set('db', db);
+  c.set("db", db);
   await next();
   await client.end();
-}; 
+};

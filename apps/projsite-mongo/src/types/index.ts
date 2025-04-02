@@ -1,4 +1,4 @@
-import { Db } from 'mongodb';
+import { Db } from "mongodb";
 
 // Environment type for Hono
 export interface HonoEnv {
