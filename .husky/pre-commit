@@ -12,8 +12,6 @@ STAGED_FILES=$(git diff --cached --name-only)
 if echo "$STAGED_FILES" | grep -qE "^(apps|packages)/"; then
   echo "🔍 Checking if build works for affected packages..."
   echo "📦 Building packages and their dependents..."
-  # Show which packages will be built
-  bun run turbo build --filter=[HEAD^1] --dry=json | jq -r '.packages | .[] | "  - \(.name)"'
   # Actually run the build
   bun run turbo build --filter=[HEAD^1] || (
     echo "❌ Build failed! Please fix the build issues before committing."

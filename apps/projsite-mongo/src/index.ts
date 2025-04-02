@@ -31,7 +31,7 @@ import companiesRouter from "./routes/companies";
 import projectsRouter from "./routes/projects";
 import ninjaRouter from "./routes/ninja";
 import resourceRouter from "./routes/resources";
-//import subProjectRouter from './routes/sub-projects';
+import subProjectRouter from "./routes/sub-projects";
 //import zoneRouter from './routes/unloading-zones';
 
 // Protected routes - require authentication
@@ -39,12 +39,13 @@ app.use("/api/v1/companies/*", auth);
 app.use("/api/v1/projects/*", auth);
 app.use("/api/v1/ninja/*", auth);
 app.use("/api/v1/resources/*", auth);
+app.use("/api/v1/sub-projects/*", auth);
 
 app.route("/api/v1/companies", companiesRouter);
 app.route("/api/v1/projects", projectsRouter);
 app.route("/api/v1/ninja", ninjaRouter);
 app.route("/api/v1/resources", resourceRouter);
-
+app.route("/api/v1/sub-projects", subProjectRouter);
 app.onError(handleError);
 
 // Swagger UI

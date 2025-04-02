@@ -11,12 +11,6 @@ import { HTTPException } from "hono/http-exception";
 const resourceRouter = new Hono<HonoEnv>();
 
 resourceRouter
-  .get("/", async c => {
-    const db = c.get("db");
-    const service = new ResourceService(db);
-    const result = await service.findAll();
-    return c.json({ success: true, data: result });
-  })
   .get(
     "/project/:id",
     zValidator("param", idParamSchema, validationErrorHandler),

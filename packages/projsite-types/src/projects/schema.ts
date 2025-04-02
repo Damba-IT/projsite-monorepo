@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { dateRangeSchema, locationSchema } from "../common/schema";
+import {
+  dateRangeSchema,
+  locationSchema,
+  objectIdSchema,
+} from "../common/schema";
 
 const formValidationRulesSchema = z.object({
   shipment_booking: z.object({
@@ -44,7 +48,7 @@ const projectSettingsSchema = z.object({
 export const createProjectSchema = z.object({
   project_id: z.string(),
   project_name: z.string().min(1, "Project name is required"),
-  company_id: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
+  company_id: objectIdSchema,
   location: locationSchema,
   date_range: dateRangeSchema,
   settings: projectSettingsSchema,
