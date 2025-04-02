@@ -6,6 +6,7 @@ export const Collections = {
   NINJA_ORDERS: "ninja_orders",
   RESOURCES: "resource",
   SUB_PROJECTS: "sub_project",
+  UNLOADING_ZONES: "unloading_zone",
 } as const;
 
 // Types
