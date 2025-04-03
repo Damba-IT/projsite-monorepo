@@ -8,6 +8,7 @@ import {
 } from "mongodb";
 
 export abstract class BaseService<T extends { _id?: ObjectId }> {
+  //TODO:: migrate the extention to Document like in trpc instead of _id objectif... test that it works
   protected collection: Collection<T>;
 
   constructor(
