@@ -7,6 +7,8 @@ export const Collections = {
   RESOURCES: "resource",
   SUB_PROJECTS: "sub_project",
   UNLOADING_ZONES: "unloading_zone",
+  USER_MEMBERSHIPS: "user_authorizations",
+  ROLES: "roles",
 } as const;
 
 // Types

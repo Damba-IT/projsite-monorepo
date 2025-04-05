@@ -10,3 +10,4 @@ export * from "./resources";
 export * from "./bookings";
 export * from "./sub-projects";
 export * from "./unloading-zones";
+export * from "./user-membership";

@@ -33,6 +33,7 @@ import ninjaRouter from "./routes/ninja";
 import resourceRouter from "./routes/resources";
 import subProjectRouter from "./routes/sub-projects";
 import unloadingZoneRouter from "./routes/unloading-zones";
+import userMembershipsRouter from "./routes/user-memberships";
 
 // Protected routes - require authentication
 app.use("/api/v1/companies/*", auth);
@@ -41,13 +42,14 @@ app.use("/api/v1/ninja/*", auth);
 app.use("/api/v1/resources/*", auth);
 app.use("/api/v1/sub-projects/*", auth);
 app.use("/api/v1/unloading-zones/*", auth);
-
+app.use("/api/v1/user-memberships/*", auth);
 app.route("/api/v1/companies", companiesRouter);
 app.route("/api/v1/projects", projectsRouter);
 app.route("/api/v1/ninja", ninjaRouter);
 app.route("/api/v1/resources", resourceRouter);
 app.route("/api/v1/sub-projects", subProjectRouter);
 app.route("/api/v1/unloading-zones", unloadingZoneRouter);
+app.route("/api/v1/user-memberships", userMembershipsRouter);
 app.onError(handleError);
 
 // Swagger UI

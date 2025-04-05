@@ -11,9 +11,9 @@ import { HTTPException } from "hono/http-exception";
 import { validationErrorHandler } from "../middleware/error-handler";
 import { z } from "zod";
 
-const app = new Hono<HonoEnv>();
+const unloadingZoneRouter = new Hono<HonoEnv>();
 
-app
+unloadingZoneRouter
   .get(
     "/project/:id",
     zValidator("param", idParamSchema, validationErrorHandler),
@@ -155,4 +155,4 @@ app
     }
   );
 
-export default app;
+export default unloadingZoneRouter;
